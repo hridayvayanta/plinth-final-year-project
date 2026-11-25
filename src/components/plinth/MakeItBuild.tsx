@@ -9,7 +9,7 @@ export function MakeItBuild() {
           {/* Center translucent drafting-tape bridge */}
           <div
             aria-hidden="true"
-            className="peel-tape pointer-events-none absolute left-1/2 top-1/2 z-30 hidden h-16 w-48 -translate-x-1/2 -translate-y-1/2 -rotate-6 md:block"
+            className="peel-tape pointer-events-none absolute left-1/2 top-12 z-30 hidden h-12 w-36 -translate-x-1/2 -rotate-3 md:block"
           />
 
           {/* Left Squircle: AI Section (Exact Brief Copy + Pre-filled Copilot Prompts) */}
