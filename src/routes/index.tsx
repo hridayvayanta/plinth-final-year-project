@@ -1,62 +1,30 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useSmoothScroll } from "@/lib/anim";
-import { Nav, FloorRail } from "@/components/plinth/Nav";
-import { Cursor } from "@/components/plinth/Cursor";
-import { Loader } from "@/components/plinth/Loader";
-import { Cinematic } from "@/components/plinth/Cinematic";
-import { Vision } from "@/components/plinth/Vision";
-import { Story } from "@/components/plinth/Story";
-import { Platform } from "@/components/plinth/Platform";
-import { Roles } from "@/components/plinth/Roles";
-import { Modules } from "@/components/plinth/Modules";
-import { ModuleIndex } from "@/components/plinth/ModuleIndex";
-import { AIShowcase } from "@/components/plinth/AIShowcase";
-import { Showcase3D } from "@/components/plinth/Showcase3D";
-import { InteractiveArchitecture } from "@/components/plinth/InteractiveArchitecture";
-import { Technology } from "@/components/plinth/Technology";
-import { FutureVision } from "@/components/plinth/FutureVision";
-import { Footer } from "@/components/plinth/Footer";
-
-const title = "PLINTH — Architecture, computed";
-const description =
-  "PLINTH is an AI platform that carries a commercial building from bare ground to issued drawings: floor plans, massing, structure, cost, compliance and BOQ in one continuous model.";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { getToken } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: description },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
+    meta: [{ title: "PLINTH — Blank Canvas" }],
   }),
   component: Index,
 });
 
 function Index() {
-  useSmoothScroll();
+  const target = getToken() ? "/app" : "/login";
 
   return (
-    <main className="bg-paper">
-      <Loader />
-      <Cursor />
-      <Nav />
-      <FloorRail />
-      <Cinematic />
-      <Vision />
-      <Story />
-      <Platform />
-      <Roles />
-      <Modules />
-      <ModuleIndex />
-      <AIShowcase />
-      <Showcase3D />
-      <InteractiveArchitecture />
-      <Technology />
-      <FutureVision />
-      <Footer />
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center text-foreground">
+      <p className="font-mono text-xs tracking-[0.25em] text-muted-foreground uppercase">
+        PLINTH · Clean Slate
+      </p>
+      <h1 className="mt-3 text-2xl font-medium tracking-tight">
+        Landing frontend cleared — ready for reference redesign.
+      </h1>
+      <Link
+        to={target}
+        className="mt-6 inline-flex items-center border border-foreground bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-85"
+      >
+        Open PLINTH →
+      </Link>
     </main>
   );
 }
