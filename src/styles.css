@@ -350,8 +350,8 @@
 /* ── Sweet-Tape Tactile Studio System (Landing & Brand Chrome) ── */
 
 .sweet-body {
-  background-color: #034102;
-  color: #034102;
+  background-color: #111317;
+  color: #111317;
   font-family: var(--font-sans);
 }
 
@@ -361,13 +361,13 @@ html:has(.sweet-body)::-webkit-scrollbar {
 }
 
 html:has(.sweet-body)::-webkit-scrollbar-track {
-  background: #013900;
+  background: #0b0d10;
 }
 
 html:has(.sweet-body)::-webkit-scrollbar-thumb {
-  background: #b6fe00;
+  background: #2952ff;
   border-radius: 999px;
-  border: 3px solid #013900;
+  border: 3px solid #0b0d10;
 }
 
 .font-display-cond {

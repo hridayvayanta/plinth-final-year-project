@@ -107,36 +107,36 @@ function Login() {
   }
 
   return (
-    <div className="paper-grain sweet-body relative flex min-h-screen items-center justify-center overflow-hidden bg-[#034102] p-4">
-      {/* Top Neon-Lime Curved Band */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[#b6fe00]">
+    <div className="paper-grain sweet-body relative flex min-h-screen items-center justify-center overflow-hidden bg-[#111317] p-4">
+      {/* Top Warm Drafting Vellum Curved Band */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[#f4f1ea]">
         <svg
           viewBox="0 0 1440 120"
           preserveAspectRatio="none"
           className="absolute -bottom-px left-0 h-16 w-full"
           aria-hidden="true"
         >
-          <path d="M0,120 L0,0 C480,105 960,105 1440,0 L1440,120 Z" fill="#034102" />
+          <path d="M0,120 L0,0 C480,105 960,105 1440,0 L1440,120 Z" fill="#111317" />
         </svg>
       </div>
 
       {/* Main Taped Card */}
-      <div className="relative z-10 w-full max-w-md rounded-[32px] border-4 border-[#034102] bg-[#f8f8f2] p-8 text-[#034102] shadow-[0_28px_70px_rgba(0,0,0,0.45)]">
+      <div className="relative z-10 w-full max-w-md rounded-[32px] border-4 border-[#111317] bg-[#f4f1ea] p-8 text-[#111317] shadow-[0_28px_70px_rgba(0,0,0,0.45)]">
         <div className="peel-tape pointer-events-none absolute -top-3.5 left-1/2 h-7 w-32 -translate-x-1/2 -rotate-2" />
 
         {/* Logo & Heading */}
         <div className="text-center">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-[#034102] bg-[#b6fe00] px-4 py-1"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-[#111317] bg-[#2952ff] px-4 py-1 text-white"
           >
-            <span className="h-2.5 w-2.5 rounded-full bg-[#034102]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-white" />
             <span className="font-display-cond text-xl tracking-tight">PLINTH STUDIO</span>
           </Link>
-          <h1 className="font-display-cond mt-4 text-4xl tracking-tight text-[#034102]">
+          <h1 className="font-display-cond mt-4 text-4xl tracking-tight text-[#111317]">
             {isSignup ? "CREATE ACCOUNT" : "ENTER STUDIO"}
           </h1>
-          <p className="mt-1 text-xs font-medium text-[#034102]/70">
+          <p className="mt-1 text-xs font-medium text-[#111317]/70">
             {nextTarget !== "/app"
               ? `Continuing to ${nextTarget.replace("/app/", "").toUpperCase()} after sign-in`
               : "Architectural Intelligence Workspace"}
@@ -144,7 +144,7 @@ function Login() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="mt-5 grid grid-cols-2 gap-1 rounded-full border-2 border-[#034102] bg-[#e9ece3] p-1 text-center text-xs">
+        <div className="mt-5 grid grid-cols-2 gap-1 rounded-full border-2 border-[#111317] bg-[#e5e0d5] p-1 text-center text-xs">
           <button
             type="button"
             onClick={() => {
@@ -152,7 +152,7 @@ function Login() {
               setError("");
             }}
             className={`rounded-full py-2 font-bold transition-colors ${
-              !isSignup ? "bg-[#034102] text-[#b6fe00]" : "text-[#034102]/70 hover:text-[#034102]"
+              !isSignup ? "bg-[#111317] text-[#f4f1ea]" : "text-[#111317]/70 hover:text-[#111317]"
             }`}
           >
             Sign In
@@ -164,7 +164,7 @@ function Login() {
               setError("");
             }}
             className={`rounded-full py-2 font-bold transition-colors ${
-              isSignup ? "bg-[#034102] text-[#b6fe00]" : "text-[#034102]/70 hover:text-[#034102]"
+              isSignup ? "bg-[#111317] text-[#f4f1ea]" : "text-[#111317]/70 hover:text-[#111317]"
             }`}
           >
             Create Account
@@ -176,15 +176,15 @@ function Login() {
           type="button"
           onClick={handleDemoLogin}
           disabled={loading}
-          className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-full border-2 border-[#034102] bg-[#b6fe00] font-display-cond text-xl tracking-wide text-[#034102] shadow-md transition-transform hover:scale-[1.02] disabled:opacity-50"
+          className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-full border-2 border-[#111317] bg-[#2952ff] font-display-cond text-xl tracking-wide text-white shadow-md transition-transform hover:scale-[1.02] disabled:opacity-50"
         >
           ⚡ INSTANT DEMO ACCESS ↗
         </button>
 
         {/* Quick-Fill Role Accounts */}
         {!isSignup && (
-          <div className="mt-4 rounded-2xl border-2 border-dotted border-[#034102]/35 bg-white/70 p-3">
-            <p className="font-mono text-[10px] font-bold tracking-wider text-[#034102]/70 uppercase">
+          <div className="mt-4 rounded-2xl border-2 border-dotted border-[#111317]/30 bg-white/80 p-3">
+            <p className="font-mono text-[10px] font-bold tracking-wider text-[#111317]/70 uppercase">
               Quick-Fill Demo Roles (pass: demo1234)
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -195,8 +195,8 @@ function Login() {
                   onClick={() => fillDemoAccount(acc.email, acc.role)}
                   className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold transition-colors ${
                     email === acc.email
-                      ? "border-[#034102] bg-[#034102] text-[#b6fe00]"
-                      : "border-[#034102]/30 bg-white text-[#034102] hover:bg-[#b6fe00]/50"
+                      ? "border-[#111317] bg-[#111317] text-white"
+                      : "border-[#111317]/30 bg-white text-[#111317] hover:bg-[#2952ff] hover:text-white"
                   }`}
                 >
                   {acc.label}
@@ -208,7 +208,7 @@ function Login() {
 
         <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
           {error && (
-            <div className="rounded-xl border-2 border-[#b84a27] bg-[#ff7b5f]/15 px-3 py-2 text-xs font-semibold text-[#7a2410]">
+            <div className="rounded-xl border-2 border-[#e8502b] bg-[#e8502b]/15 px-3 py-2 text-xs font-semibold text-[#8c280e]">
               {error}
             </div>
           )}
@@ -224,7 +224,7 @@ function Login() {
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="e.g. Sneha Iyer"
                 required
-                className="h-10 w-full rounded-xl border-2 border-[#034102]/30 bg-white px-3 text-sm outline-none transition-colors focus:border-[#034102]"
+                className="h-10 w-full rounded-xl border-2 border-[#111317]/25 bg-white px-3 text-sm outline-none transition-colors focus:border-[#2952ff]"
               />
             </div>
           )}
@@ -239,7 +239,7 @@ function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="architect@plinth.ai"
               required
-              className="h-10 w-full rounded-xl border-2 border-[#034102]/30 bg-white px-3 text-sm outline-none transition-colors focus:border-[#034102]"
+              className="h-10 w-full rounded-xl border-2 border-[#111317]/25 bg-white px-3 text-sm outline-none transition-colors focus:border-[#2952ff]"
             />
           </div>
 
@@ -253,21 +253,21 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="h-10 w-full rounded-xl border-2 border-[#034102]/30 bg-white px-3 text-sm outline-none transition-colors focus:border-[#034102]"
+              className="h-10 w-full rounded-xl border-2 border-[#111317]/25 bg-white px-3 text-sm outline-none transition-colors focus:border-[#2952ff]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="flex h-11 w-full items-center justify-center rounded-full bg-[#034102] font-display-cond text-xl tracking-wide text-[#b6fe00] transition-transform hover:scale-[1.01] disabled:opacity-50"
+            className="flex h-11 w-full items-center justify-center rounded-full bg-[#111317] font-display-cond text-xl tracking-wide text-[#f4f1ea] transition-transform hover:scale-[1.01] hover:bg-[#e8502b] disabled:opacity-50"
           >
             {loading ? "PROCESSING..." : isSignup ? "CREATE ACCOUNT & LAUNCH →" : "SIGN IN →"}
           </button>
         </form>
 
-        <p className="mt-5 text-center text-xs font-medium text-[#034102]/75">
-          <Link to="/" className="underline decoration-2 underline-offset-4 hover:text-[#034102]">
+        <p className="mt-5 text-center text-xs font-medium text-[#111317]/75">
+          <Link to="/" className="underline decoration-2 underline-offset-4 hover:text-[#2952ff]">
             ← Back to PLINTH landing page
           </Link>
         </p>

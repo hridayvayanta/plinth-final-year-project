@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { openPlinthTarget } from "@/lib/auth-nav";
+import { Arch3DCanvas } from "./Arch3DCanvas";
 import { ORBIT_MODES } from "./sweet-data";
 
 export function OrbitalDial() {
@@ -93,9 +94,8 @@ export function OrbitalDial() {
             </button>
           </div>
 
-          {/* Center Stage: Giant Typography + Taped Tilted Cards + Circular EXPLORE ↗ Badge */}
+          {/* Center Stage: Giant Display Typography + Borderless 3D Model + Taped Render Cards */}
           <div className="order-1 relative flex flex-col items-center lg:order-2 lg:col-span-6">
-            {/* Giant 2-line background display */}
             <div className="pointer-events-none select-none text-center">
               <p className="font-display-cond text-4xl opacity-85 md:text-6xl">{mode.topWord}</p>
               <h2 className="font-display-cond -mt-2 text-[clamp(4.2rem,11vw,9.5rem)] leading-[0.8] tracking-[-0.04em]">
@@ -103,9 +103,9 @@ export function OrbitalDial() {
               </h2>
             </div>
 
-            {/* Tilted Showcase Cards + Center Circle Roll */}
-            <div className="relative mt-4 flex w-full max-w-xl items-center justify-center">
-              {/* Left tilted photo card */}
+            {/* Live Three.js 3D Structure flanked by Taped Render Cards */}
+            <div className="relative mt-2 flex w-full max-w-2xl items-center justify-center">
+              {/* Left tilted taped render card */}
               <div
                 onClick={() => openPlinthTarget(mode.to)}
                 role="button"
@@ -113,34 +113,26 @@ export function OrbitalDial() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") openPlinthTarget(mode.to);
                 }}
-                className="group relative -mr-6 w-44 cursor-pointer rounded-[24px] bg-[#f8f8f2] p-2 text-[#034102] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:w-56 md:rounded-[30px]"
-                style={{ transform: "rotate(-8deg)" }}
+                className="group relative z-10 -mr-10 hidden w-44 cursor-pointer rounded-[24px] bg-[#f4f1ea] p-2 text-[#111317] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:block sm:w-48"
+                style={{ transform: "rotate(-9deg)" }}
               >
                 <div className="peel-tape pointer-events-none absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 rotate-2" />
                 <img
                   src={mode.leftCardImg}
                   alt={mode.leftCardAlt}
-                  className="h-36 w-full rounded-[18px] object-cover sm:h-48"
+                  className="h-40 w-full rounded-[18px] object-cover"
                 />
                 <p className="px-2 pb-1 pt-2 font-mono text-[10px] font-bold uppercase">
                   {mode.leftCardCaption}
                 </p>
               </div>
 
-              {/* Center circular model roll */}
-              <div className="relative z-20 flex h-36 w-36 shrink-0 items-center justify-center rounded-full border-8 border-[#f8f8f2] bg-[#034102] p-1 shadow-[0_24px_50px_rgba(0,0,0,0.38)] sm:h-48 sm:w-48">
-                <img
-                  src={mode.centerImg}
-                  alt={mode.bottomWord}
-                  className="h-full w-full rounded-full object-cover"
-                />
-                <div
-                  className="absolute inset-4 rounded-full border-4 border-dashed border-[#f8f8f2]/75"
-                  aria-hidden="true"
-                />
+              {/* Center Borderless Interactive Three.js 3D Structure */}
+              <div className="relative z-20 h-64 w-64 shrink-0 sm:h-80 sm:w-80">
+                <Arch3DCanvas mode={mode.id} className="h-full w-full" />
               </div>
 
-              {/* Right tilted photo card */}
+              {/* Right tilted taped render card */}
               <div
                 onClick={() => openPlinthTarget(mode.to)}
                 role="button"
@@ -148,14 +140,14 @@ export function OrbitalDial() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") openPlinthTarget(mode.to);
                 }}
-                className="group relative -ml-6 w-44 cursor-pointer rounded-[24px] bg-[#f8f8f2] p-2 text-[#034102] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:w-56 md:rounded-[30px]"
-                style={{ transform: "rotate(7deg)" }}
+                className="group relative z-10 -ml-10 hidden w-44 cursor-pointer rounded-[24px] bg-[#f4f1ea] p-2 text-[#111317] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:block sm:w-48"
+                style={{ transform: "rotate(8deg)" }}
               >
                 <div className="peel-tape pointer-events-none absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 -rotate-3" />
                 <img
                   src={mode.rightCardImg}
                   alt={mode.rightCardAlt}
-                  className="h-36 w-full rounded-[18px] object-cover sm:h-48"
+                  className="h-40 w-full rounded-[18px] object-cover"
                 />
                 <p className="px-2 pb-1 pt-2 font-mono text-[10px] font-bold uppercase">
                   {mode.rightCardCaption}
@@ -166,14 +158,14 @@ export function OrbitalDial() {
               <button
                 type="button"
                 onClick={() => openPlinthTarget(mode.to)}
-                className="group absolute -right-2 -top-6 z-30 flex h-24 w-24 flex-col items-center justify-center rounded-full bg-[#f8f8f2] text-[#034102] shadow-2xl transition-transform duration-300 hover:scale-110 hover:rotate-6 sm:h-28 sm:w-28"
+                className="group absolute -right-1 -top-4 z-30 flex h-24 w-24 flex-col items-center justify-center rounded-full bg-[#f4f1ea] text-[#111317] shadow-2xl transition-transform duration-300 hover:scale-110 hover:rotate-6 sm:h-28 sm:w-28"
               >
                 <span
-                  className="absolute inset-1.5 rounded-full border-2 border-dotted border-[#034102]/55"
+                  className="absolute inset-1.5 rounded-full border-2 border-dotted border-[#111317]/45"
                   aria-hidden="true"
                 />
                 <span className="font-display-cond text-lg tracking-wide sm:text-xl">EXPLORE</span>
-                <span className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#b6fe00] text-xs font-bold text-[#034102] transition-transform group-hover:rotate-45">
+                <span className="mt-0.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#2952ff] text-xs font-bold text-white transition-transform group-hover:rotate-45">
                   ↗
                 </span>
               </button>
@@ -189,7 +181,6 @@ export function OrbitalDial() {
               </span>
             </div>
 
-            {/* Orbital dial grid (curved arc feel on desktop, clean grid on mobile) */}
             <div className="grid grid-cols-3 gap-3 lg:grid-cols-2 lg:gap-4">
               {ORBIT_MODES.map((m, idx) => {
                 const isActive = idx === activeIdx;
@@ -202,12 +193,12 @@ export function OrbitalDial() {
                     aria-pressed={isActive}
                     className={`group relative flex h-20 w-20 flex-col items-center justify-center rounded-full border-4 transition-all duration-300 sm:h-24 sm:w-24 ${arcOffset} ${
                       isActive
-                        ? "scale-110 border-[#f8f8f2] shadow-2xl ring-4 ring-[#034102]/30"
-                        : "border-[#034102]/30 opacity-85 hover:scale-105 hover:opacity-100"
+                        ? "scale-110 border-[#f4f1ea] shadow-2xl ring-4 ring-black/25"
+                        : "border-white/30 opacity-85 hover:scale-105 hover:opacity-100"
                     }`}
                     style={{ backgroundColor: m.bg, color: m.ink }}
                   >
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-current/40 bg-[#f8f8f2]/90 font-mono text-[10px] font-bold text-[#034102]">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-current/40 bg-[#f4f1ea] font-mono text-[10px] font-bold text-[#111317]">
                       {String(idx + 1).padStart(2, "0")}
                     </span>
                     <span className="font-display-cond mt-1 text-base leading-none tracking-wide">

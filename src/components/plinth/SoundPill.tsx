@@ -45,15 +45,13 @@ export function SoundPill() {
         setOn(next);
         playTactileClick(next);
       }}
-      className={`fixed bottom-5 right-5 z-[180] flex items-center gap-2 rounded-full border-2 border-[#034102] p-1.5 pr-3 shadow-lg transition-colors duration-300 ${
-        on ? "bg-[#b6fe00] text-[#034102]" : "bg-[#f8f8f2] text-[#034102]"
+      className={`fixed bottom-5 right-5 z-[180] flex items-center gap-2 rounded-full border-2 border-[#111317] p-1.5 pr-3 shadow-lg transition-colors duration-300 ${
+        on ? "bg-[#2952ff] text-white" : "bg-[#f4f1ea] text-[#111317]"
       }`}
     >
       <span
-        className={`flex h-7 w-7 items-center justify-center rounded-full border border-[#034102] transition-transform duration-300 ${
-          on
-            ? "translate-x-0.5 rotate-180 bg-[#034102] text-[#b6fe00]"
-            : "bg-[#b6fe00] text-[#034102]"
+        className={`flex h-7 w-7 items-center justify-center rounded-full border border-[#111317] transition-transform duration-300 ${
+          on ? "translate-x-0.5 rotate-180 bg-[#f4f1ea] text-[#2952ff]" : "bg-[#2952ff] text-white"
         }`}
       >
         {on ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}

@@ -30,7 +30,7 @@ function Index() {
   useSmoothScroll();
 
   return (
-    <main className="sweet-body min-h-screen overflow-x-hidden bg-[#034102]">
+    <main className="sweet-body min-h-screen overflow-x-hidden bg-[#111317]">
       <Preloader />
       <PullMenu />
       <SoundPill />

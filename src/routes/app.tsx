@@ -102,12 +102,12 @@ function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Top Studio Bar (#034102 + #b6fe00 Brand Identity) */}
-      <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-4 border-b-2 border-[#034102] bg-[#034102] px-4 text-[#f8f8f2]">
+      {/* Top Studio Bar (#111317 Midnight Charcoal + #2952ff Cobalt Identity) */}
+      <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-4 border-b border-[#262a33] bg-[#111317] px-4 text-[#f4f1ea]">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="rounded-full border border-[#b6fe00]/50 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-[#b6fe00] uppercase lg:hidden"
+          className="rounded-full border border-[#f4f1ea]/30 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-[#f4f1ea] uppercase lg:hidden"
           aria-label="Toggle navigation"
         >
           Menu
@@ -115,23 +115,23 @@ function AppLayout() {
 
         <Link
           to="/"
-          className="flex items-center gap-2 rounded-full bg-[#b6fe00] px-3 py-1 text-[#034102]"
+          className="flex items-center gap-2 rounded-full bg-[#2952ff] px-3 py-1 text-white"
         >
-          <span className="block h-2 w-2 rounded-full bg-[#034102]" aria-hidden />
+          <span className="block h-2 w-2 rounded-full bg-white" aria-hidden />
           <Wordmark className="text-[11px] font-extrabold" />
         </Link>
 
-        <span className="hidden h-4 w-px bg-[#b6fe00]/25 sm:block" />
+        <span className="hidden h-4 w-px bg-[#f4f1ea]/20 sm:block" />
 
         {/* Live Project Badge linking to Projects */}
         <Link
           to="/app/projects"
           className="hidden min-w-0 items-baseline gap-3 transition-opacity hover:opacity-85 sm:flex"
         >
-          <span className="truncate text-[13px] font-semibold text-[#f8f8f2]">
+          <span className="truncate text-[13px] font-semibold text-[#f4f1ea]">
             {currentProject?.name || "The Glass Pavilion"}
           </span>
-          <span className="truncate font-mono text-[10px] tracking-[0.12em] text-[#b6fe00]/85 uppercase">
+          <span className="truncate font-mono text-[10px] tracking-[0.12em] text-[#60a5fa] uppercase">
             {currentProject?.code || "PRJ-001"} · {currentProject?.location || "Bengaluru, KA"}
           </span>
         </Link>
@@ -140,21 +140,20 @@ function AppLayout() {
         <div className="ml-auto flex items-center gap-2.5">
           <Link
             to="/"
-            className="hidden items-center rounded-full border border-[#b6fe00]/35 px-2.5 py-1 font-mono text-[10px] text-[#b6fe00] transition-colors hover:bg-[#b6fe00] hover:text-[#034102] md:inline-flex"
+            className="hidden items-center rounded-full border border-[#f4f1ea]/25 px-2.5 py-1 font-mono text-[10px] text-[#f4f1ea]/85 transition-colors hover:bg-[#f4f1ea] hover:text-[#111317] md:inline-flex"
           >
             ← Site
           </Link>
 
-          {/* Discipline Role Selector */}
-          <div className="flex items-center gap-1.5 rounded-full border border-[#b6fe00]/35 bg-[#013900] px-2.5 py-1">
-            <span className="font-mono text-[10px] text-[#b6fe00]/80 uppercase">Role:</span>
+          <div className="flex items-center gap-1.5 rounded-full border border-[#f4f1ea]/25 bg-[#1b1f27] px-2.5 py-1">
+            <span className="font-mono text-[10px] text-[#60a5fa] uppercase">Role:</span>
             <select
               value={activeRole}
               onChange={(e) => setActiveRole(normalizeRoleId(e.target.value))}
-              className="cursor-pointer bg-transparent text-[11px] font-semibold text-[#f8f8f2] outline-none"
+              className="cursor-pointer bg-transparent text-[11px] font-semibold text-[#f4f1ea] outline-none"
             >
               {ROLES_LIST.map((r) => (
-                <option key={r.id} value={r.id} className="bg-[#034102] text-[#f8f8f2]">
+                <option key={r.id} value={r.id} className="bg-[#111317] text-[#f4f1ea]">
                   {r.label}
                 </option>
               ))}
@@ -162,13 +161,13 @@ function AppLayout() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="hidden text-[12px] text-[#f8f8f2]/80 sm:inline">
+            <span className="hidden text-[12px] text-[#f4f1ea]/75 sm:inline">
               {user?.full_name || "Sneha Iyer"}
             </span>
             <button
               onClick={logout}
               title="Sign Out"
-              className="h-7 rounded-full border border-[#b6fe00]/50 px-3 font-mono text-[10px] font-semibold text-[#b6fe00] transition-colors hover:bg-[#b6fe00] hover:text-[#034102]"
+              className="h-7 rounded-full border border-[#f4f1ea]/30 px-3 font-mono text-[10px] font-semibold text-[#f4f1ea] transition-colors hover:border-[#e8502b] hover:bg-[#e8502b] hover:text-white"
             >
               Sign out
             </button>
@@ -204,7 +203,7 @@ function AppLayout() {
                           className={cn(
                             "relative flex items-center gap-3 border-l-4 px-4 py-2 text-[13px] transition-colors",
                             active
-                              ? "border-[#034102] bg-[#b6fe00]/35 font-semibold text-[#034102]"
+                              ? "border-[#2952ff] bg-[#2952ff]/10 font-semibold text-[#111317]"
                               : "border-transparent text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground",
                           )}
                         >
@@ -212,7 +211,7 @@ function AppLayout() {
                           <span className="flex-1">{it.label}</span>
                           {isFocus && (
                             <span
-                              className="h-2 w-2 rounded-full bg-[#034102] ring-2 ring-[#b6fe00]"
+                              className="h-2 w-2 rounded-full bg-[#e8502b]"
                               title={`Recommended for ${roleObj.label}`}
                             />
                           )}
