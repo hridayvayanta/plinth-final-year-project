@@ -68,20 +68,24 @@ function AppLayout() {
   const { data: projectsData } = useProjects();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const [activeRole, setActiveRole] = useState<StudioRoleId>(() => {
+  const [activeRole, setActiveRole] = useState<StudioRoleId>(() => normalizeRoleId(user?.role));
+
+  useEffect(() => {
     if (
       typeof window !== "undefined" &&
       typeof localStorage !== "undefined" &&
       typeof localStorage.getItem === "function"
     ) {
       try {
-        return normalizeRoleId(localStorage.getItem("plinth_user_role") || user?.role);
+        const stored = localStorage.getItem("plinth_user_role");
+        if (stored) {
+          setActiveRole(normalizeRoleId(stored));
+        }
       } catch {
-        return normalizeRoleId(user?.role);
+        // ignore
       }
     }
-    return normalizeRoleId(user?.role);
-  });
+  }, []);
 
   useEffect(() => {
     if (
@@ -137,15 +141,15 @@ function AppLayout() {
         </Link>
 
         {/* Role Selector & User Actions */}
-        <div className="ml-auto flex items-center gap-2.5">
+        <div className="ml-auto flex shrink-0 items-center gap-2.5">
           <Link
             to="/"
-            className="hidden items-center rounded-full border border-[#f4f1ea]/25 px-2.5 py-1 font-mono text-[10px] text-[#f4f1ea]/85 transition-colors hover:bg-[#f4f1ea] hover:text-[#111317] md:inline-flex"
+            className="hidden shrink-0 items-center whitespace-nowrap rounded-full border border-[#f4f1ea]/25 px-2.5 py-1 font-mono text-[10px] text-[#f4f1ea]/85 transition-colors hover:bg-[#f4f1ea] hover:text-[#111317] md:inline-flex"
           >
             ← Site
           </Link>
 
-          <div className="flex items-center gap-1.5 rounded-full border border-[#f4f1ea]/25 bg-[#1b1f27] px-2.5 py-1">
+          <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#f4f1ea]/25 bg-[#1b1f27] px-2.5 py-1">
             <span className="font-mono text-[10px] text-[#60a5fa] uppercase">Role:</span>
             <select
               value={activeRole}
@@ -160,14 +164,14 @@ function AppLayout() {
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="hidden text-[12px] text-[#f4f1ea]/75 sm:inline">
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="hidden whitespace-nowrap text-[12px] text-[#f4f1ea]/75 sm:inline">
               {user?.full_name || "Sneha Iyer"}
             </span>
             <button
               onClick={logout}
               title="Sign Out"
-              className="h-7 rounded-full border border-[#f4f1ea]/30 px-3 font-mono text-[10px] font-semibold text-[#f4f1ea] transition-colors hover:border-[#e8502b] hover:bg-[#e8502b] hover:text-white"
+              className="h-7 shrink-0 whitespace-nowrap rounded-full border border-[#f4f1ea]/30 px-3 font-mono text-[10px] font-semibold text-[#f4f1ea] transition-colors hover:border-[#e8502b] hover:bg-[#e8502b] hover:text-white"
             >
               Sign out
             </button>

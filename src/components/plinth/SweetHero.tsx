@@ -5,10 +5,10 @@ export function SweetHero() {
   return (
     <section id="top" className="relative overflow-hidden bg-[#111317] text-[#f4f1ea]">
       {/* ── Upper Warm Drafting Vellum Half with Sweeping Curved Cut ── */}
-      <div className="paper-grain relative bg-[#f4f1ea] pb-44 pt-20 text-[#111317] md:pb-64 md:pt-24">
+      <div className="paper-grain relative bg-[#f4f1ea] pb-36 pt-16 text-[#111317] md:pb-52 md:pt-20">
         <div className="relative z-10 mx-auto max-w-[1440px] px-6 md:px-12">
           {/* Top-left perforated corner mark */}
-          <div className="mb-8 inline-flex items-stretch gap-3 md:mb-10">
+          <div className="mb-6 inline-flex items-stretch gap-3 md:mb-6">
             <span className="w-1 border-l-2 border-dotted border-[#2952ff]" />
             <p className="max-w-[220px] font-mono text-[11px] font-semibold leading-snug tracking-[0.14em] text-[#111317]/80 uppercase">
               ONE MODEL · 13 AI MODULES · 9 ROLES
@@ -52,7 +52,7 @@ export function SweetHero() {
       </div>
 
       {/* ── Borderless Interactive Three.js 3D Tower Straddling the Curve ── */}
-      <div className="relative z-20 mx-auto -mt-44 flex max-w-5xl flex-col items-center px-6 md:-mt-64">
+      <div className="relative z-20 mx-auto -mt-36 flex max-w-5xl flex-col items-center px-6 md:-mt-56">
         <div className="relative h-[340px] w-full max-w-3xl sm:h-[420px] md:h-[500px]">
           <Arch3DCanvas mode="hero" className="h-full w-full" />
 

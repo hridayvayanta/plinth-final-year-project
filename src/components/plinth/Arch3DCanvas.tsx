@@ -75,6 +75,10 @@ export function Arch3DCanvas({ mode, className = "", interactive = true }: Arch3
         fillWarm.position.set(5, -2, -6);
         scene.add(fillWarm);
 
+        const frontFill = new THREE.DirectionalLight(0xf4f1ea, 0.9);
+        frontFill.position.set(2, 2, 8);
+        scene.add(frontFill);
+
         const rootGroup = new THREE.Group();
         scene.add(rootGroup);
 
@@ -340,26 +344,48 @@ export function Arch3DCanvas({ mode, className = "", interactive = true }: Arch3
               });
             });
           } else if (activeMode === "interiors") {
-            // Cutaway luxury architectural pavilion room
-            addBox(rootGroup, 3.4, 0.14, 2.8, 0, -0.7, 0, slabMat, 0x111317);
-            addBox(rootGroup, 0.16, 1.8, 2.8, -1.62, 0.25, 0, oxideMat, 0x111317);
-            addBox(rootGroup, 3.4, 1.8, 0.16, 0, 0.25, -1.32, darkSteelMat, 0x2952ff);
-            addBox(rootGroup, 3.4, 0.12, 2.8, 0, 1.15, 0, slabMat, 0x111317);
-            // Floating furniture & stair volumes
-            const island = addBox(rootGroup, 1.25, 0.42, 0.75, 0.25, -0.4, 0.2, cobaltMat);
+            // Sunlit architectural pavilion cutaway (zero co-planar z-fighting)
+            addBox(rootGroup, 3.4, 0.14, 2.8, 0, -0.78, 0, slabMat, 0x111317);
+            addBox(rootGroup, 0.16, 1.72, 2.62, -1.6, 0.15, 0.08, oxideMat, 0x111317);
+            addBox(rootGroup, 3.22, 1.72, 0.16, 0.08, 0.15, -1.3, slabMat, 0x2952ff);
+            addBox(rootGroup, 3.4, 0.12, 2.8, 0, 1.09, 0, darkSteelMat, 0x60a5fa);
+            // Architectural island, lounge & corner structural column
+            const island = addBox(
+              rootGroup,
+              1.3,
+              0.44,
+              0.72,
+              0.35,
+              -0.46,
+              0.15,
+              cobaltMat,
+              0xf4f1ea,
+            );
             const lounge = addBox(
               rootGroup,
-              1.1,
-              0.35,
+              1.05,
+              0.34,
               0.9,
-              -0.65,
-              -0.45,
-              0.35,
+              -0.68,
+              -0.51,
+              0.45,
               glassMat,
               0xf4f1ea,
             );
-            animatedParts.push({ mesh: island, baseY: -0.4, phase: 0, amp: 0.04 });
-            animatedParts.push({ mesh: lounge, baseY: -0.45, phase: 1.1, amp: 0.04 });
+            const column = addBox(
+              rootGroup,
+              0.18,
+              1.72,
+              0.18,
+              1.38,
+              0.15,
+              1.15,
+              darkSteelMat,
+              0x2952ff,
+            );
+            animatedParts.push({ mesh: island, baseY: -0.46, phase: 0, amp: 0.04 });
+            animatedParts.push({ mesh: lounge, baseY: -0.51, phase: 1.1, amp: 0.04 });
+            animatedParts.push({ mesh: column, baseY: 0.15, phase: 0.5, amp: 0 });
           } else if (activeMode === "cost") {
             // 5 Stacked & arrayed parametric cost package columns
             const pkgs = [

@@ -6,14 +6,17 @@ import { ORBIT_MODES } from "./sweet-data";
 export function OrbitalDial() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [prevBg, setPrevBg] = useState(ORBIT_MODES[0]!.bg);
+  const [displayInk, setDisplayInk] = useState(ORBIT_MODES[0]!.ink);
   const [wipeKey, setWipeKey] = useState(0);
   const timerRef = useRef<number | null>(null);
+  const inkTimerRef = useRef<number | null>(null);
 
   const mode = ORBIT_MODES[activeIdx] ?? ORBIT_MODES[0]!;
 
   useEffect(() => {
     return () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      if (inkTimerRef.current !== null) window.clearTimeout(inkTimerRef.current);
     };
   }, []);
 
@@ -23,17 +26,21 @@ export function OrbitalDial() {
     setActiveIdx(idx);
     setWipeKey((k) => k + 1);
     if (timerRef.current !== null) window.clearTimeout(timerRef.current);
-    const nextBg = ORBIT_MODES[idx]?.bg ?? mode.bg;
+    if (inkTimerRef.current !== null) window.clearTimeout(inkTimerRef.current);
+    const nextMode = ORBIT_MODES[idx] ?? mode;
+    inkTimerRef.current = window.setTimeout(() => {
+      setDisplayInk(nextMode.ink);
+    }, 240);
     timerRef.current = window.setTimeout(() => {
-      setPrevBg(nextBg);
+      setPrevBg(nextMode.bg);
     }, 640);
   }
 
   return (
     <section
       id="orbital-engines"
-      className="relative overflow-hidden py-20 transition-colors duration-300 md:py-28"
-      style={{ backgroundColor: prevBg, color: mode.ink }}
+      className="relative overflow-hidden pb-24 pt-24 transition-colors duration-300 md:pb-28 md:pt-28"
+      style={{ backgroundColor: prevBg, color: displayInk }}
     >
       {/* Curved downward paint wipe layer */}
       <div
@@ -113,7 +120,7 @@ export function OrbitalDial() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") openPlinthTarget(mode.to);
                 }}
-                className="group relative z-10 -mr-10 hidden w-44 cursor-pointer rounded-[24px] bg-[#f4f1ea] p-2 text-[#111317] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:block sm:w-48"
+                className="group relative z-10 -mr-3 hidden w-44 cursor-pointer rounded-[24px] bg-[#f4f1ea] p-2 text-[#111317] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:block sm:w-48"
                 style={{ transform: "rotate(-9deg)" }}
               >
                 <div className="peel-tape pointer-events-none absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 rotate-2" />
@@ -128,7 +135,7 @@ export function OrbitalDial() {
               </div>
 
               {/* Center Borderless Interactive Three.js 3D Structure */}
-              <div className="relative z-20 h-64 w-64 shrink-0 sm:h-80 sm:w-80">
+              <div className="relative z-20 h-60 w-60 shrink-0 sm:h-72 sm:w-72">
                 <Arch3DCanvas mode={mode.id} className="h-full w-full" />
               </div>
 
@@ -140,7 +147,7 @@ export function OrbitalDial() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") openPlinthTarget(mode.to);
                 }}
-                className="group relative z-10 -ml-10 hidden w-44 cursor-pointer rounded-[24px] bg-[#f4f1ea] p-2 text-[#111317] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:block sm:w-48"
+                className="group relative z-10 -ml-3 hidden w-44 cursor-pointer rounded-[24px] bg-[#f4f1ea] p-2 text-[#111317] shadow-2xl transition-transform duration-300 hover:z-30 hover:scale-105 hover:rotate-0 sm:block sm:w-48"
                 style={{ transform: "rotate(8deg)" }}
               >
                 <div className="peel-tape pointer-events-none absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 -rotate-3" />

@@ -45,7 +45,7 @@ export function SoundPill() {
         setOn(next);
         playTactileClick(next);
       }}
-      className={`fixed bottom-5 right-5 z-[180] flex items-center gap-2 rounded-full border-2 border-[#111317] p-1.5 pr-3 shadow-lg transition-colors duration-300 ${
+      className={`fixed bottom-4 right-4 z-[180] hidden items-center gap-2 rounded-full border-2 border-[#111317] p-1.5 pr-3 shadow-lg transition-colors duration-300 sm:flex ${
         on ? "bg-[#2952ff] text-white" : "bg-[#f4f1ea] text-[#111317]"
       }`}
     >
