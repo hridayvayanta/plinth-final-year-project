@@ -3,7 +3,7 @@
  * Backend runs at http://127.0.0.1:8000
  */
 
-import { buildLoginUrl } from "./auth-nav.ts";
+import { buildLoginUrl, stripBasePath, withBasePath } from "./auth-nav.ts";
 
 const API_BASE =
   (import.meta.env as Record<string, string | undefined> | undefined)?.["VITE_API_URL"] ||
@@ -51,8 +51,11 @@ export function clearToken() {
 
 function handleUnauthorized(): never {
   clearToken();
-  if (typeof window !== "undefined" && window.location.pathname !== "/login") {
-    window.location.href = buildLoginUrl(window.location.pathname + window.location.search);
+  if (typeof window !== "undefined") {
+    const appPath = stripBasePath(window.location.pathname);
+    if (appPath !== "/login") {
+      window.location.href = withBasePath(buildLoginUrl(appPath + window.location.search));
+    }
   }
   throw new Error("Unauthorized");
 }

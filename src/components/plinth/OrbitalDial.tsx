@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { openPlinthTarget } from "@/lib/auth-nav";
+import { openPlinthTarget, withBasePath } from "@/lib/auth-nav";
 import { Arch3DCanvas } from "./Arch3DCanvas";
 import { ORBIT_MODES, WORKSPACE_CATEGORIES } from "./sweet-data";
 
@@ -135,7 +135,7 @@ export function OrbitalDial() {
               >
                 <div className="peel-tape pointer-events-none absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 rotate-2" />
                 <img
-                  src={mode.leftCardImg}
+                  src={withBasePath(mode.leftCardImg)}
                   alt={mode.leftCardAlt}
                   className="h-40 w-full rounded-[18px] object-cover"
                 />
@@ -160,7 +160,7 @@ export function OrbitalDial() {
               >
                 <div className="peel-tape pointer-events-none absolute -top-2.5 left-1/2 z-10 h-5 w-20 -translate-x-1/2 -rotate-3" />
                 <img
-                  src={mode.rightCardImg}
+                  src={withBasePath(mode.rightCardImg)}
                   alt={mode.rightCardAlt}
                   className="h-40 w-full rounded-[18px] object-cover"
                 />

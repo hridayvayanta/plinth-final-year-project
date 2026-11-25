@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { openPlinthTarget } from "@/lib/auth-nav";
+import { openPlinthTarget, withBasePath } from "@/lib/auth-nav";
 import { PULL_MENU_ITEMS } from "./sweet-data";
 
 export function PullMenu() {
@@ -98,7 +98,7 @@ export function PullMenu() {
                   </div>
 
                   <img
-                    src={item.thumb}
+                    src={withBasePath(item.thumb)}
                     alt=""
                     className="hidden h-12 w-16 shrink-0 rounded-xl border border-[#111317]/20 object-cover transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 sm:block"
                   />

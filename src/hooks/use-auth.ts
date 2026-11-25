@@ -7,6 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { auth, clearToken, getToken, setToken, type UserResponse } from "@/lib/api";
+import { withBasePath } from "@/lib/auth-nav";
 
 export function useAuth() {
   const queryClient = useQueryClient();
@@ -43,7 +44,7 @@ export function useAuth() {
   const logout = useCallback(() => {
     clearToken();
     queryClient.clear();
-    if (typeof window !== "undefined") window.location.href = "/login";
+    if (typeof window !== "undefined") window.location.href = withBasePath("/login");
   }, [queryClient]);
 
   return {

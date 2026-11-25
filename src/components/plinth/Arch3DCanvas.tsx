@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { withBasePath } from "@/lib/auth-nav";
 import type { Arch3DMode } from "./sweet-data";
 
 export interface Arch3DCanvasProps {
@@ -491,7 +492,7 @@ export function Arch3DCanvas({ mode, className = "", interactive = true }: Arch3
       {webglFailed && (
         <div className="flex h-full w-full items-center justify-center">
           <img
-            src="/assets/wireframe.jpg"
+            src={withBasePath("/assets/wireframe.jpg")}
             alt="3D architectural wireframe structure"
             className="h-4/5 w-4/5 rounded-3xl object-contain opacity-90"
           />

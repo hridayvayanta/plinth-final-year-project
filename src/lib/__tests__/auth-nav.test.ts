@@ -6,6 +6,8 @@ import {
   normalizeRoleId,
   openPlinthTarget,
   sanitizeNextPath,
+  stripBasePath,
+  withBasePath,
 } from "../auth-nav.ts";
 import { ai, auth, clearToken, getToken, setToken } from "../api.ts";
 
@@ -150,5 +152,16 @@ describe("api 401 redirect guard", () => {
     fakeWindow.location = { href: "/login", pathname: "/login", search: "" };
     await assert.rejects(() => ai.detectFloorplan(dummyFile), /Unauthorized/);
     assert.equal(fakeWindow.location.href, "/login");
+  });
+});
+
+describe("basePath helpers", () => {
+  it("prefixes and strips GitHub Pages basepath cleanly without double-prefixing", () => {
+    assert.equal(withBasePath("/app", "/"), "/app");
+    assert.equal(withBasePath("/assets/blueprint.jpg", "/plinth-final-year-project/"), "/plinth-final-year-project/assets/blueprint.jpg");
+    assert.equal(withBasePath("/plinth-final-year-project/login", "/plinth-final-year-project/"), "/plinth-final-year-project/login");
+    assert.equal(stripBasePath("/plinth-final-year-project/app/cost", "/plinth-final-year-project/"), "/app/cost");
+    assert.equal(stripBasePath("/plinth-final-year-project", "/plinth-final-year-project/"), "/");
+    assert.equal(stripBasePath("/login", "/"), "/login");
   });
 });

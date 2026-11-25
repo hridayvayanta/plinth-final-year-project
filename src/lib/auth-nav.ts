@@ -1,5 +1,36 @@
 import { getToken } from "./api.ts";
 
+export function normalizeBasePath(base?: string): string {
+  const raw =
+    base ??
+    (typeof import.meta !== "undefined" && typeof import.meta.env !== "undefined"
+      ? import.meta.env.BASE_URL
+      : "/");
+  if (!raw || raw === "/") return "";
+  const withLeading = raw.startsWith("/") ? raw : `/${raw}`;
+  return withLeading.replace(/\/+$/, "");
+}
+
+export function withBasePath(path: string, base?: string): string {
+  const normalizedBase = normalizeBasePath(base);
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  if (!normalizedBase) return cleanPath;
+  if (cleanPath === normalizedBase || cleanPath.startsWith(`${normalizedBase}/`)) {
+    return cleanPath;
+  }
+  return `${normalizedBase}${cleanPath}`;
+}
+
+export function stripBasePath(pathname: string, base?: string): string {
+  const normalizedBase = normalizeBasePath(base);
+  if (!normalizedBase) return pathname || "/";
+  if (pathname === normalizedBase) return "/";
+  if (pathname.startsWith(`${normalizedBase}/`)) {
+    return pathname.slice(normalizedBase.length) || "/";
+  }
+  return pathname || "/";
+}
+
 export const STUDIO_ROLE_IDS = [
   "architect",
   "project_admin",
@@ -93,5 +124,6 @@ export function buildLoginUrl(targetPath: string): string {
 export function openPlinthTarget(targetPath: string): void {
   if (typeof window === "undefined") return;
   const safeTarget = sanitizeNextPath(targetPath);
-  window.location.href = getToken() ? safeTarget : buildLoginUrl(safeTarget);
+  const dest = getToken() ? safeTarget : buildLoginUrl(safeTarget);
+  window.location.href = withBasePath(dest);
 }

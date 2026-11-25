@@ -1,5 +1,5 @@
 import { useGsapScope } from "@/lib/anim";
-import { openPlinthTarget } from "@/lib/auth-nav";
+import { openPlinthTarget, withBasePath } from "@/lib/auth-nav";
 import { Arch3DCanvas } from "./Arch3DCanvas";
 import { JOURNEY_CHAPTERS } from "./sweet-data";
 
@@ -152,7 +152,7 @@ export function GiantJourney() {
                   >
                     <div className="peel-tape pointer-events-none absolute -top-3 left-1/2 z-10 h-6 w-28 -translate-x-1/2 rotate-2" />
                     <img
-                      src={ch.img}
+                      src={withBasePath(ch.img)}
                       alt={ch.imgAlt}
                       loading="lazy"
                       className="h-48 w-full rounded-[20px] object-cover"

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { auth, setToken } from "@/lib/api";
-import { normalizeRoleId, sanitizeNextPath } from "@/lib/auth-nav";
+import { normalizeRoleId, sanitizeNextPath, withBasePath } from "@/lib/auth-nav";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/login")({
@@ -45,7 +45,7 @@ function Login() {
     await queryClient.invalidateQueries({ queryKey: ["auth"] });
     await queryClient.invalidateQueries({ queryKey: ["projects"] });
     if (nextTarget.includes("?") || nextTarget.includes("#")) {
-      window.location.href = nextTarget;
+      window.location.href = withBasePath(nextTarget);
       return;
     }
     await navigate({ to: nextTarget });
@@ -79,6 +79,14 @@ function Login() {
     }
   }
 
+  async function enterStaticPreviewFallback() {
+    if (nextTarget.includes("?") || nextTarget.includes("#")) {
+      window.location.href = withBasePath(nextTarget);
+      return;
+    }
+    await navigate({ to: nextTarget });
+  }
+
   async function handleDemoLogin() {
     setError("");
     setLoading(true);
@@ -86,6 +94,17 @@ function Login() {
       const res = await auth.login("architect@plinth.ai", "demo1234");
       await completeAuth(res.access_token);
     } catch {
+      const hasCustomApi = Boolean(
+        (import.meta.env as Record<string, string | undefined> | undefined)?.["VITE_API_URL"],
+      );
+      if (
+        !hasCustomApi &&
+        typeof window !== "undefined" &&
+        window.location.hostname.endsWith("github.io")
+      ) {
+        await enterStaticPreviewFallback();
+        return;
+      }
       setError("Demo authentication failed. Please ensure backend server is running.");
     } finally {
       setLoading(false);
