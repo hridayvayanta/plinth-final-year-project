@@ -23,7 +23,7 @@ export function PullMenu() {
             onClick={() => openPlinthTarget("/app")}
             className="hidden items-center gap-1.5 rounded-full border-2 border-[#111317] bg-[#2952ff] px-4 py-1.5 text-[12px] font-bold tracking-wide text-white shadow-md transition-transform duration-300 hover:-translate-y-0.5 sm:inline-flex"
           >
-            OPEN PLINTH
+            EXPLORE WORKSPACE
             <span aria-hidden="true">↗</span>
           </button>
         </div>
@@ -42,7 +42,7 @@ export function PullMenu() {
               {open ? "CLOSE ×" : "PULL ME"}
             </span>
             <span className="font-hand mt-0.5 text-[11px] text-[#f4f1ea]/75">
-              {open ? "fold up" : "6 studios"}
+              {open ? "fold up" : "11 modules"}
             </span>
           </button>
         </div>
@@ -63,7 +63,7 @@ export function PullMenu() {
         <div className="paper-grain mx-auto max-w-[1200px] px-6 pb-10 pt-20 md:px-10">
           <div className="mb-4 flex items-center justify-between">
             <span className="font-mono text-[11px] font-semibold tracking-[0.2em] text-[#111317]/65 uppercase">
-              Direct Studio Launchpad
+              Studio · Design · Delivery · Intelligence
             </span>
             <button
               type="button"
@@ -73,7 +73,7 @@ export function PullMenu() {
               }}
               className="inline-flex items-center gap-2 rounded-full bg-[#2952ff] px-4 py-1.5 text-xs font-bold text-white transition-transform hover:scale-105"
             >
-              ENTER DASHBOARD ↗
+              ENTER WORKSPACE ↗
             </button>
           </div>
 
@@ -88,9 +88,14 @@ export function PullMenu() {
                   }}
                   className="group flex w-full items-center gap-4 py-3.5 text-left transition-colors hover:bg-[#2952ff]/10 md:gap-6 md:px-3"
                 >
-                  <span className="font-mono text-xs font-semibold text-[#2952ff]">
-                    {item.code}
-                  </span>
+                  <div className="w-24 shrink-0">
+                    <span className="block font-mono text-[10px] font-bold tracking-wider text-[#2952ff]">
+                      {item.category}
+                    </span>
+                    <span className="font-mono text-xs font-semibold text-[#111317]/70">
+                      {item.code}
+                    </span>
+                  </div>
 
                   <img
                     src={item.thumb}
@@ -99,7 +104,7 @@ export function PullMenu() {
                   />
 
                   <div className="min-w-0 flex-1">
-                    <span className="font-display-cond block text-3xl tracking-[-0.03em] text-[#111317] transition-transform duration-300 group-hover:translate-x-2 md:text-5xl">
+                    <span className="font-display-cond block text-2xl tracking-[-0.03em] text-[#111317] transition-transform duration-300 group-hover:translate-x-2 md:text-4xl">
                       {item.label}
                     </span>
                     <span className="mt-0.5 block text-xs font-medium text-[#111317]/70 md:text-sm">

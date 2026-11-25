@@ -9,15 +9,18 @@ import { GiantJourney } from "@/components/plinth/GiantJourney";
 import { MakeItBuild } from "@/components/plinth/MakeItBuild";
 import { SweetFooter } from "@/components/plinth/SweetFooter";
 
-const title = "PLINTH — Architecture, computed";
+const title = "PLINTH — AI-Powered Architectural Design & Project Management Platform";
 const description =
-  "PLINTH is an AI platform that carries a building from bare ground to issued drawings: floor plans, massing, structure, cost, compliance and BOQ in one continuous model.";
+  "Explore PLINTH, an integrated architectural workspace for floor planning, interior design, 3D visualization, site analysis, cost estimation, compliance and AI-assisted project management.";
+const keywords =
+  "AI architecture software, architectural design platform, AI floor planner, architectural project management, interior design software, architectural visualization, construction cost estimation, site analysis software, architectural AI assistant, ArchTech, architectural planning tools, AI-powered architecture";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title },
       { name: "description", content: description },
+      { name: "keywords", content: keywords },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },

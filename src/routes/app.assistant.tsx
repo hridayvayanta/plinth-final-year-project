@@ -13,7 +13,11 @@ export const Route = createFileRoute("/app/assistant")({
   head: () => ({
     meta: [
       { title: "AI Assistant — PLINTH Copilot" },
-      { name: "description", content: "ChatGPT-style architectural AI Copilot acting on selected room, level or package." },
+      {
+        name: "description",
+        content:
+          "ChatGPT-style architectural AI Copilot acting on selected room, level or package.",
+      },
     ],
   }),
   component: Assistant,
@@ -128,7 +132,8 @@ function Assistant() {
         const y = typeof geom["y"] === "number" ? (geom["y"] as number) : 4 + row * 15;
         const w = typeof geom["w"] === "number" ? (geom["w"] as number) : 18;
         const h = typeof geom["h"] === "number" ? (geom["h"] as number) : 13;
-        const orientation = typeof geom["orientation"] === "string" ? (geom["orientation"] as string) : "NE";
+        const orientation =
+          typeof geom["orientation"] === "string" ? (geom["orientation"] as string) : "NE";
         const area_sqm = r.area_sqm != null ? r.area_sqm : estimateRoomAreaSqm(w, h).areaSqm;
         const area = sqmToSqft(area_sqm);
         return { id: r.id, name: r.name, type: r.type, area, area_sqm, x, y, w, h, orientation };
@@ -158,6 +163,20 @@ function Assistant() {
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const appliedPromptRef = useRef(false);
+
+  // Pre-fill prompt once when arriving via ?prompt=...
+  useEffect(() => {
+    if (appliedPromptRef.current || typeof window === "undefined") return;
+    const promptParam = new URLSearchParams(window.location.search).get("prompt");
+    if (promptParam && promptParam.trim()) {
+      appliedPromptRef.current = true;
+      setInput(promptParam.trim());
+      requestAnimationFrame(() => {
+        textareaRef.current?.focus();
+      });
+    }
+  }, []);
 
   // Auto-scroll chat feed to bottom
   useEffect(() => {
@@ -207,7 +226,12 @@ function Assistant() {
 
     if (!replyText) {
       const qLower = currentQ.toLowerCase();
-      if (qLower === "hi" || qLower === "hello" || qLower.startsWith("hi") || qLower.startsWith("hello")) {
+      if (
+        qLower === "hi" ||
+        qLower === "hello" ||
+        qLower.startsWith("hi") ||
+        qLower.startsWith("hello")
+      ) {
         replyText = `### 👋 Hello! I am **PLINTH AI**, your Copilot for **${selected.name}**.\n\nI can assist you with:\n• 📐 **Layout Optimization:** Try *"Generate 3 alternative layouts"*\n• 💰 **Cost Takeoff:** Try *"Reduce cost by 8%"*\n• 📜 **NBC 2016 Code Audit:** Try *"Check NBC compliance"*\n• 🧭 **Vastu Alignment:** Try *"Check Vastu orientation"*`;
       } else {
         replyText = `### 🤖 PLINTH Architectural AI Analysis\n\nI analyzed your prompt: *"${currentQ}"*\n\n**Selected Zone:** ${selected.name} (${selected.area} sq ft, ${selected.orientation} orientation)\n\n1. **Spatial Efficiency:** Maintained 84% carpet efficiency.\n2. **Building Code:** Meets NBC 2016 setback & ventilation clearances.\n3. **BOQ Watch:** Materials aligned with standard metro rates.\n\nClick **Apply** to integrate recommendations directly into your BOQ cost model!`;
@@ -251,8 +275,8 @@ function Assistant() {
               w: newW,
               h: newH,
             }
-          : r
-      )
+          : r,
+      ),
     );
 
     const noticeText = `✨ Real-time Spatial Update: ${selected.name} footprint reduced from ${oldArea} sq ft → ${newArea} sq ft (−8.4%). Steel beam optimized.`;
@@ -289,11 +313,15 @@ function Assistant() {
     };
 
     setMessages((prev) => [...prev, confirmMsg]);
-    toast.success(`Updated ${selected.name} model! Area reduced to ${newArea} sq ft and ₹45,000 cost item applied.`);
+    toast.success(
+      `Updated ${selected.name} model! Area reduced to ${newArea} sq ft and ₹45,000 cost item applied.`,
+    );
   }
 
   function handleShowImpact(ctx: string) {
-    toast.info(`Impact calculated for ${ctx}: Cost variance -8.4% (Savings: ₹149,000). Compliance 100%.`);
+    toast.info(
+      `Impact calculated for ${ctx}: Cost variance -8.4% (Savings: ₹149,000). Compliance 100%.`,
+    );
   }
 
   function handleCopy(id: string, text: string) {
@@ -335,7 +363,9 @@ function Assistant() {
               AI
             </span>
             <span className="text-[13px] font-semibold">PLINTH Copilot</span>
-            <span className="label-tech text-[10px] bg-secondary px-1.5 py-0.5">{selected.name}</span>
+            <span className="label-tech text-[10px] bg-secondary px-1.5 py-0.5">
+              {selected.name}
+            </span>
           </div>
           <button
             onClick={handleClearChat}
@@ -352,7 +382,9 @@ function Assistant() {
           {messages.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center p-6 text-muted-foreground">
               <Sparkles className="h-8 w-8 text-foreground/40 mb-3" />
-              <p className="text-[14px] font-medium text-foreground">How can PLINTH AI assist you today?</p>
+              <p className="text-[14px] font-medium text-foreground">
+                How can PLINTH AI assist you today?
+              </p>
               <p className="mt-1 text-[12px] max-w-xs">
                 Select a room on the floor plan or choose a prompt suggestion below to begin.
               </p>
@@ -385,7 +417,11 @@ function Assistant() {
                           title="Copy AI Response"
                           className="flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
                         >
-                          {copiedId === m.id ? <Check className="h-3.5 w-3.5 text-accent" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copiedId === m.id ? (
+                            <Check className="h-3.5 w-3.5 text-accent" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                           {copiedId === m.id ? "Copied" : "Copy"}
                         </button>
                       </div>
@@ -401,7 +437,7 @@ function Assistant() {
                             "h-7 border px-3 text-[11px] font-medium transition-all rounded-md flex items-center gap-1.5",
                             appliedIds.includes(m.id)
                               ? "bg-emerald-600 border-emerald-600 text-white cursor-default"
-                              : "border-foreground bg-foreground text-background hover:bg-transparent hover:text-foreground"
+                              : "border-foreground bg-foreground text-background hover:bg-transparent hover:text-foreground",
                           )}
                         >
                           {appliedIds.includes(m.id) ? (
@@ -485,7 +521,11 @@ function Assistant() {
               title="Send Prompt (Enter)"
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-foreground text-background transition-colors hover:bg-foreground/80 disabled:opacity-40 mb-0.5 mr-0.5"
             >
-              {loading ? <Bot className="h-4 w-4 animate-spin" /> : <ArrowUp className="h-4 w-4 stroke-[2.5]" />}
+              {loading ? (
+                <Bot className="h-4 w-4 animate-spin" />
+              ) : (
+                <ArrowUp className="h-4 w-4 stroke-[2.5]" />
+              )}
             </button>
           </div>
           <div className="mt-1.5 text-center text-[10px] text-muted-foreground">

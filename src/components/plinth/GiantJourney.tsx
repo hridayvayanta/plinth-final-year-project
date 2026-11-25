@@ -48,26 +48,26 @@ export function GiantJourney() {
               className="sticker-badge inline-block rounded-lg border-2 border-[#111317] bg-[#2952ff] px-4 py-1.5 font-display-cond text-xl tracking-wider text-white"
               style={{ transform: "perspective(420px) rotate(-2.5deg)" }}
             >
-              WHY PLINTH EXISTS
+              04 · CONNECTED WORKFLOW
             </div>
 
             <h2 className="font-display-cond mt-6 text-[clamp(3rem,6vw,5.4rem)] leading-[0.84] text-[#111317]">
-              ONE SOURCE OF TRUTH FROM GROUND TO HANDOVER.
+              One project. One connected workflow.
             </h2>
 
             <p className="mt-5 max-w-md text-base font-semibold leading-relaxed text-[#111317]/75">
-              Every chapter pairs live 3D architectural geometry with a direct workspace
-              trigger—click any sheet as you scroll.
+              Follow the 9-stage architectural journey from initial site analysis and floor planning
+              to visualization, budgeting and project documentation—every step clickable below.
             </p>
           </div>
 
-          {/* 3 Monumental Chapters with 3D Models, Arrows & Clickable CTAs */}
+          {/* 3 Monumental Phases Covering All 9 Exact Workflow Steps */}
           {JOURNEY_CHAPTERS.map((ch, idx) => (
             <div
               key={ch.num}
               className="flex shrink-0 flex-col gap-8 md:flex-row md:items-center md:gap-14"
             >
-              {/* Arrow + Handwritten Annotation Connector */}
+              {/* Arrow + Step Indicator */}
               <div className="hidden flex-col items-center gap-2 md:flex">
                 <span className="font-hand text-xl font-bold text-[#2952ff]">{ch.handNote}</span>
                 <svg width="96" height="42" viewBox="0 0 96 42" fill="none" aria-hidden="true">
@@ -88,8 +88,7 @@ export function GiantJourney() {
                 </svg>
               </div>
 
-              {/* Chapter Stage */}
-              <article className="relative flex flex-col gap-6 md:w-[56rem] md:flex-row md:items-center md:gap-8">
+              <article className="relative flex flex-col gap-6 md:w-[58rem] md:flex-row md:items-center md:gap-8">
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
                     <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-[#111317] bg-[#e8502b] font-hand text-2xl font-bold text-white">
@@ -100,18 +99,37 @@ export function GiantJourney() {
                     </span>
                   </div>
 
-                  <h3 className="font-display-cond mt-4 text-[clamp(4rem,8.2vw,7.8rem)] leading-[0.8] tracking-[-0.04em] text-[#111317]">
+                  <h3 className="font-display-cond mt-4 text-[clamp(3.6rem,7.2vw,6.8rem)] leading-[0.82] tracking-[-0.04em] text-[#111317]">
                     {ch.headline}
                   </h3>
 
-                  <p className="mt-4 max-w-sm text-sm font-semibold leading-relaxed text-[#111317]/75 md:text-base">
+                  {/* Clickable 3-Step List for This Phase */}
+                  <ul className="mt-4 space-y-1.5">
+                    {ch.steps.map((step) => (
+                      <li key={step.num}>
+                        <button
+                          type="button"
+                          onClick={() => openPlinthTarget(step.to)}
+                          className="group inline-flex items-center gap-2.5 text-sm font-bold text-[#111317] transition-colors hover:text-[#2952ff]"
+                        >
+                          <span className="rounded bg-[#111317]/10 px-1.5 py-0.5 font-mono text-[11px] group-hover:bg-[#2952ff] group-hover:text-white">
+                            {step.num}
+                          </span>
+                          <span>{step.label}</span>
+                          <span className="opacity-60 group-hover:translate-x-0.5">→</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="mt-4 max-w-sm text-sm font-medium leading-relaxed text-[#111317]/75">
                     {ch.sub}
                   </p>
 
                   <button
                     type="button"
                     onClick={() => openPlinthTarget(ch.to)}
-                    className="mt-6 inline-flex items-center gap-2 rounded-full border-2 border-[#111317] bg-[#111317] px-6 py-3 font-display-cond text-xl tracking-wide text-[#f4f1ea] shadow-xl transition-transform duration-300 hover:scale-105 hover:bg-[#2952ff]"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-[#111317] bg-[#111317] px-6 py-3 font-display-cond text-xl tracking-wide text-[#f4f1ea] shadow-xl transition-transform duration-300 hover:scale-105 hover:bg-[#2952ff]"
                   >
                     {ch.cta}
                   </button>
@@ -141,7 +159,7 @@ export function GiantJourney() {
                     />
                     <div className="flex items-center justify-between px-2 pb-1 pt-3">
                       <span className="font-mono text-[11px] font-bold uppercase">
-                        STAGE 0{ch.num}
+                        PHASE 0{ch.num}
                       </span>
                       <span className="rounded-full bg-[#2952ff] px-3 py-1 font-mono text-[11px] font-bold text-white">
                         OPEN ↗

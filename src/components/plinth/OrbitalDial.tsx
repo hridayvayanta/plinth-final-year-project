@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { openPlinthTarget } from "@/lib/auth-nav";
 import { Arch3DCanvas } from "./Arch3DCanvas";
-import { ORBIT_MODES } from "./sweet-data";
+import { ORBIT_MODES, WORKSPACE_CATEGORIES } from "./sweet-data";
 
 export function OrbitalDial() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -51,8 +51,8 @@ export function OrbitalDial() {
       />
 
       <div className="relative z-10 mx-auto max-w-[1440px] px-6 md:px-12">
-        {/* Top perforated subhead pill */}
-        <div className="flex justify-center">
+        {/* Section Header: Exact Brief Copy */}
+        <div className="text-center">
           <div
             className="inline-flex items-center gap-3 rounded-r-full px-5 py-2 shadow-md"
             style={{
@@ -62,15 +62,23 @@ export function OrbitalDial() {
             }}
           >
             <span className="font-mono text-xs font-bold tracking-[0.2em] uppercase">
-              {mode.subhead}
+              03 · FOUR INTERCONNECTED WORKSPACES
             </span>
           </div>
+
+          <h2 className="font-display-cond mt-4 text-4xl tracking-tight md:text-6xl">
+            Everything your project needs. Connected.
+          </h2>
         </div>
 
-        {/* Main 3-column stage */}
-        <div className="mt-12 grid items-center gap-10 lg:grid-cols-12">
-          {/* Left Rail: 3 Stacked Feature Pills + Copy */}
-          <div className="order-2 flex flex-col gap-5 lg:order-1 lg:col-span-3">
+        {/* Interactive 3D Orbital Stage */}
+        <div className="mt-10 grid items-center gap-10 lg:grid-cols-12">
+          {/* Left Rail: Category Tag, Feature Pills, Copy, Honest Caveat & CTA */}
+          <div className="order-2 flex flex-col gap-4 lg:order-1 lg:col-span-3">
+            <span className="font-mono text-xs font-bold tracking-[0.18em] uppercase opacity-80">
+              {mode.category}
+            </span>
+
             <div className="flex flex-wrap gap-2 lg:flex-col lg:items-start">
               {mode.tags.map((tag) => (
                 <span
@@ -91,6 +99,10 @@ export function OrbitalDial() {
               {mode.description}
             </p>
 
+            {mode.caveat && (
+              <p className="font-mono text-[11px] leading-snug opacity-80">Note: {mode.caveat}</p>
+            )}
+
             <button
               type="button"
               onClick={() => openPlinthTarget(mode.to)}
@@ -101,18 +113,16 @@ export function OrbitalDial() {
             </button>
           </div>
 
-          {/* Center Stage: Giant Display Typography + Borderless 3D Model + Taped Render Cards */}
+          {/* Center Stage: Giant Typography + Live 3D Structure + Taped Cards */}
           <div className="order-1 relative flex flex-col items-center lg:order-2 lg:col-span-6">
             <div className="pointer-events-none select-none text-center">
-              <p className="font-display-cond text-4xl opacity-85 md:text-6xl">{mode.topWord}</p>
-              <h2 className="font-display-cond -mt-2 text-[clamp(4.2rem,11vw,9.5rem)] leading-[0.8] tracking-[-0.04em]">
+              <p className="font-display-cond text-4xl opacity-85 md:text-5xl">{mode.topWord}</p>
+              <h3 className="font-display-cond -mt-2 text-[clamp(4rem,10.5vw,9rem)] leading-[0.8] tracking-[-0.04em]">
                 {mode.bottomWord}
-              </h2>
+              </h3>
             </div>
 
-            {/* Live Three.js 3D Structure flanked by Taped Render Cards */}
             <div className="relative mt-2 flex w-full max-w-2xl items-center justify-center">
-              {/* Left tilted taped render card */}
               <div
                 onClick={() => openPlinthTarget(mode.to)}
                 role="button"
@@ -134,12 +144,10 @@ export function OrbitalDial() {
                 </p>
               </div>
 
-              {/* Center Borderless Interactive Three.js 3D Structure */}
               <div className="relative z-20 h-60 w-60 shrink-0 sm:h-72 sm:w-72">
                 <Arch3DCanvas mode={mode.id} className="h-full w-full" />
               </div>
 
-              {/* Right tilted taped render card */}
               <div
                 onClick={() => openPlinthTarget(mode.to)}
                 role="button"
@@ -161,7 +169,6 @@ export function OrbitalDial() {
                 </p>
               </div>
 
-              {/* Overlapping Top-Right Circular EXPLORE ↗ Button */}
               <button
                 type="button"
                 onClick={() => openPlinthTarget(mode.to)}
@@ -179,10 +186,10 @@ export function OrbitalDial() {
             </div>
           </div>
 
-          {/* Right Rail: Orbital Dial Selector ("ROLL IT!") */}
+          {/* Right Rail: Orbital Dial Selector */}
           <div className="order-3 flex flex-col items-center lg:col-span-3">
             <div className="mb-4 flex items-center gap-2">
-              <span className="font-hand text-xl font-bold">ROLL IT!</span>
+              <span className="font-hand text-xl font-bold">SELECT MODULE</span>
               <span className="font-mono text-xs opacity-75">
                 ({String(activeIdx + 1).padStart(2, "0")}/06)
               </span>
@@ -206,7 +213,7 @@ export function OrbitalDial() {
                     style={{ backgroundColor: m.bg, color: m.ink }}
                   >
                     <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-current/40 bg-[#f4f1ea] font-mono text-[10px] font-bold text-[#111317]">
-                      {String(idx + 1).padStart(2, "0")}
+                      {m.rollLabel.split(" ")[0]}
                     </span>
                     <span className="font-display-cond mt-1 text-base leading-none tracking-wide">
                       {m.rollLabel.split(" ")[1]}
@@ -216,6 +223,38 @@ export function OrbitalDial() {
               })}
             </div>
           </div>
+        </div>
+
+        {/* All 4 Product Categories & 11 Modules Directory Strip */}
+        <div className="mt-16 grid gap-4 border-t border-current/20 pt-10 sm:grid-cols-2 lg:grid-cols-4">
+          {WORKSPACE_CATEGORIES.map((cat) => (
+            <div
+              key={cat.id}
+              className="rounded-2xl border border-current/20 bg-black/10 p-5 backdrop-blur-[2px]"
+            >
+              <h4 className="font-display-cond text-2xl tracking-wide">{cat.name}</h4>
+              <p className="mt-1.5 text-xs font-medium leading-relaxed opacity-85">{cat.summary}</p>
+              <ul className="mt-4 space-y-1.5">
+                {cat.modules.map((mod) => (
+                  <li key={mod.code}>
+                    <button
+                      type="button"
+                      onClick={() => openPlinthTarget(mod.to)}
+                      className="group flex w-full items-center justify-between rounded-lg px-2 py-1 text-left text-xs font-semibold transition-colors hover:bg-white/15"
+                    >
+                      <span>
+                        <span className="mr-2 font-mono opacity-70">{mod.code}</span>
+                        {mod.name}
+                      </span>
+                      <span className="opacity-70 transition-transform group-hover:translate-x-0.5">
+                        →
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </section>
