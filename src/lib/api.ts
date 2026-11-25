@@ -3,7 +3,11 @@
  * Backend runs at http://127.0.0.1:8000
  */
 
-const API_BASE = (import.meta.env["VITE_API_URL"] as string) || "http://127.0.0.1:8000";
+import { buildLoginUrl } from "./auth-nav.ts";
+
+const API_BASE =
+  (import.meta.env as Record<string, string | undefined> | undefined)?.["VITE_API_URL"] ||
+  "http://127.0.0.1:8000";
 
 // ── Token management ────────────────────────────────────────────────────
 
@@ -45,6 +49,14 @@ export function clearToken() {
 
 // ── Fetch wrapper ───────────────────────────────────────────────────────
 
+function handleUnauthorized(): never {
+  clearToken();
+  if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+    window.location.href = buildLoginUrl(window.location.pathname + window.location.search);
+  }
+  throw new Error("Unauthorized");
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -57,9 +69,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, { ...init, headers });
 
   if (res.status === 401) {
-    clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
-    throw new Error("Unauthorized");
+    handleUnauthorized();
   }
 
   if (!res.ok) {
@@ -83,9 +93,7 @@ async function apiUpload<T>(path: string, formData: FormData): Promise<T> {
   });
 
   if (res.status === 401) {
-    clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
-    throw new Error("Unauthorized");
+    handleUnauthorized();
   }
 
   if (!res.ok) {

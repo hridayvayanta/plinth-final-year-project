@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { auth, setToken } from "@/lib/api";
+import { normalizeRoleId, sanitizeNextPath } from "@/lib/auth-nav";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/login")({
@@ -13,6 +14,20 @@ export const Route = createFileRoute("/login")({
   component: Login,
 });
 
+const DEMO_ACCOUNTS = [
+  { label: "Architect", email: "architect@plinth.ai", role: "architect" },
+  { label: "Structural", email: "structural@plinth.ai", role: "structural" },
+  { label: "Interior", email: "interior@plinth.ai", role: "interior" },
+  { label: "Client", email: "client@plinth.ai", role: "client" },
+  { label: "Admin", email: "admin@plinth.ai", role: "super_admin" },
+] as const;
+
+function getNextTarget(): string {
+  if (typeof window === "undefined") return "/app";
+  const raw = new URLSearchParams(window.location.search).get("next");
+  return sanitizeNextPath(raw);
+}
+
 function Login() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -23,6 +38,19 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const nextTarget = getNextTarget();
+
+  async function completeAuth(token: string) {
+    setToken(token);
+    await queryClient.invalidateQueries({ queryKey: ["auth"] });
+    await queryClient.invalidateQueries({ queryKey: ["projects"] });
+    if (nextTarget.includes("?") || nextTarget.includes("#")) {
+      window.location.href = nextTarget;
+      return;
+    }
+    await navigate({ to: nextTarget });
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -32,17 +60,14 @@ function Login() {
     try {
       if (isSignup) {
         const res = await auth.signup(cleanEmail, cleanPassword, fullName.trim() || "Architect");
-        setToken(res.access_token);
+        await completeAuth(res.access_token);
       } else {
         const res = await auth.login(cleanEmail, cleanPassword);
-        setToken(res.access_token);
+        await completeAuth(res.access_token);
       }
-      await queryClient.invalidateQueries({ queryKey: ["auth"] });
-      await queryClient.invalidateQueries({ queryKey: ["projects"] });
-      await navigate({ to: "/app" });
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Authentication failed";
-      if (msg.includes("401") || msg.includes("Invalid")) {
+      if (msg.includes("401") || msg.includes("Invalid") || msg.includes("Unauthorized")) {
         setError("Invalid email or password. Demo credentials: architect@plinth.ai / demo1234");
       } else if (msg.includes("409")) {
         setError("Email is already registered. Please sign in.");
@@ -59,10 +84,7 @@ function Login() {
     setLoading(true);
     try {
       const res = await auth.login("architect@plinth.ai", "demo1234");
-      setToken(res.access_token);
-      await queryClient.invalidateQueries({ queryKey: ["auth"] });
-      await queryClient.invalidateQueries({ queryKey: ["projects"] });
-      await navigate({ to: "/app" });
+      await completeAuth(res.access_token);
     } catch {
       setError("Demo authentication failed. Please ensure backend server is running.");
     } finally {
@@ -70,133 +92,183 @@ function Login() {
     }
   }
 
+  function fillDemoAccount(demoEmail: string, role: string) {
+    setIsSignup(false);
+    setEmail(demoEmail);
+    setPassword("demo1234");
+    setError("");
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem("plinth_user_role", normalizeRoleId(role));
+      } catch {
+        // ignore
+      }
+    }
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-sm space-y-6 border border-border bg-card p-8 shadow-2xl">
-        {/* Logo */}
+    <div className="paper-grain sweet-body relative flex min-h-screen items-center justify-center overflow-hidden bg-[#034102] p-4">
+      {/* Top Neon-Lime Curved Band */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[#b6fe00]">
+        <svg
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+          className="absolute -bottom-px left-0 h-16 w-full"
+          aria-hidden="true"
+        >
+          <path d="M0,120 L0,0 C480,105 960,105 1440,0 L1440,120 Z" fill="#034102" />
+        </svg>
+      </div>
+
+      {/* Main Taped Card */}
+      <div className="relative z-10 w-full max-w-md rounded-[32px] border-4 border-[#034102] bg-[#f8f8f2] p-8 text-[#034102] shadow-[0_28px_70px_rgba(0,0,0,0.45)]">
+        <div className="peel-tape pointer-events-none absolute -top-3.5 left-1/2 h-7 w-32 -translate-x-1/2 -rotate-2" />
+
+        {/* Logo & Heading */}
         <div className="text-center">
-          <Link to="/" className="inline-block">
-            <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center border border-foreground">
-              <span className="text-[10px] font-medium tracking-[0.2em]">P</span>
-            </div>
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-[#034102] bg-[#b6fe00] px-4 py-1"
+          >
+            <span className="h-2.5 w-2.5 rounded-full bg-[#034102]" />
+            <span className="font-display-cond text-xl tracking-tight">PLINTH STUDIO</span>
           </Link>
-          <h1 className="text-xl font-light tracking-[-0.01em]">
-            {isSignup ? "Create PLINTH Account" : "Sign in to PLINTH"}
+          <h1 className="font-display-cond mt-4 text-4xl tracking-tight text-[#034102]">
+            {isSignup ? "CREATE ACCOUNT" : "ENTER STUDIO"}
           </h1>
-          <p className="mt-1 text-[12px] text-muted-foreground">Architectural Intelligence Platform</p>
+          <p className="mt-1 text-xs font-medium text-[#034102]/70">
+            {nextTarget !== "/app"
+              ? `Continuing to ${nextTarget.replace("/app/", "").toUpperCase()} after sign-in`
+              : "Architectural Intelligence Workspace"}
+          </p>
         </div>
 
         {/* Tab Switcher */}
-        <div className="grid grid-cols-2 border border-border text-center text-[12px]">
+        <div className="mt-5 grid grid-cols-2 gap-1 rounded-full border-2 border-[#034102] bg-[#e9ece3] p-1 text-center text-xs">
           <button
             type="button"
-            onClick={() => { setIsSignup(false); setError(""); }}
-            className={`py-2 transition-colors ${!isSignup ? "bg-foreground text-background font-medium" : "text-muted-foreground hover:text-foreground"}`}
+            onClick={() => {
+              setIsSignup(false);
+              setError("");
+            }}
+            className={`rounded-full py-2 font-bold transition-colors ${
+              !isSignup ? "bg-[#034102] text-[#b6fe00]" : "text-[#034102]/70 hover:text-[#034102]"
+            }`}
           >
             Sign In
           </button>
           <button
             type="button"
-            onClick={() => { setIsSignup(true); setError(""); }}
-            className={`py-2 transition-colors ${isSignup ? "bg-foreground text-background font-medium" : "text-muted-foreground hover:text-foreground"}`}
+            onClick={() => {
+              setIsSignup(true);
+              setError("");
+            }}
+            className={`rounded-full py-2 font-bold transition-colors ${
+              isSignup ? "bg-[#034102] text-[#b6fe00]" : "text-[#034102]/70 hover:text-[#034102]"
+            }`}
           >
             Create Account
           </button>
         </div>
 
-        {/* Quick Demo Access Button */}
+        {/* Instant Demo Access */}
         <button
           type="button"
           onClick={handleDemoLogin}
           disabled={loading}
-          className="flex h-10 w-full items-center justify-center border border-border bg-muted/40 text-[12px] font-medium text-foreground transition-colors hover:bg-muted"
+          className="mt-4 flex h-11 w-full items-center justify-center gap-2 rounded-full border-2 border-[#034102] bg-[#b6fe00] font-display-cond text-xl tracking-wide text-[#034102] shadow-md transition-transform hover:scale-[1.02] disabled:opacity-50"
         >
-          ⚡ Instant Demo Access (No Password Required)
+          ⚡ INSTANT DEMO ACCESS ↗
         </button>
 
-        <div className="relative py-0 text-center">
-          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
-          <span className="relative bg-card px-2 text-[10px] uppercase text-muted-foreground">Or sign in manually</span>
-        </div>
-
-        {/* Form */}
+        {/* Quick-Fill Role Accounts */}
         {!isSignup && (
-          <div className="flex items-center justify-between border border-border/70 bg-muted/20 px-3 py-2 text-[11px] text-muted-foreground">
-            <div>
-              <span className="text-[10px] uppercase text-muted-foreground block font-mono">Demo Credentials</span>
-              <span className="font-mono text-foreground font-medium">architect@plinth.ai</span> / <span className="font-mono text-foreground font-medium">demo1234</span>
+          <div className="mt-4 rounded-2xl border-2 border-dotted border-[#034102]/35 bg-white/70 p-3">
+            <p className="font-mono text-[10px] font-bold tracking-wider text-[#034102]/70 uppercase">
+              Quick-Fill Demo Roles (pass: demo1234)
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {DEMO_ACCOUNTS.map((acc) => (
+                <button
+                  key={acc.email}
+                  type="button"
+                  onClick={() => fillDemoAccount(acc.email, acc.role)}
+                  className={`rounded-full border px-2.5 py-1 font-mono text-[10px] font-semibold transition-colors ${
+                    email === acc.email
+                      ? "border-[#034102] bg-[#034102] text-[#b6fe00]"
+                      : "border-[#034102]/30 bg-white text-[#034102] hover:bg-[#b6fe00]/50"
+                  }`}
+                >
+                  {acc.label}
+                </button>
+              ))}
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail("architect@plinth.ai");
-                setPassword("demo1234");
-                setError("");
-              }}
-              className="border border-border bg-background px-2 py-1 text-[10px] font-mono font-medium text-foreground hover:bg-muted"
-            >
-              Auto-fill
-            </button>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="mt-5 space-y-3.5">
           {error && (
-            <div className="border border-accent/30 bg-accent/5 px-3 py-2 text-[12px] text-accent">
+            <div className="rounded-xl border-2 border-[#b84a27] bg-[#ff7b5f]/15 px-3 py-2 text-xs font-semibold text-[#7a2410]">
               {error}
             </div>
           )}
 
           {isSignup && (
             <div>
-              <label className="label-tech mb-1.5 block">Full Name</label>
+              <label className="mb-1 block font-mono text-[10px] font-bold tracking-wider uppercase">
+                Full Name
+              </label>
               <input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="e.g. Sneha Iyer"
                 required
-                className="h-10 w-full border border-border bg-background px-3 text-[13px] outline-none transition-colors focus:border-foreground/50"
+                className="h-10 w-full rounded-xl border-2 border-[#034102]/30 bg-white px-3 text-sm outline-none transition-colors focus:border-[#034102]"
               />
             </div>
           )}
 
           <div>
-            <label className="label-tech mb-1.5 block">Email Address</label>
+            <label className="mb-1 block font-mono text-[10px] font-bold tracking-wider uppercase">
+              Email Address
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@company.com"
+              placeholder="architect@plinth.ai"
               required
-              className="h-10 w-full border border-border bg-background px-3 text-[13px] outline-none transition-colors focus:border-foreground/50"
+              className="h-10 w-full rounded-xl border-2 border-[#034102]/30 bg-white px-3 text-sm outline-none transition-colors focus:border-[#034102]"
             />
           </div>
 
           <div>
-            <label className="label-tech mb-1.5 block">Password</label>
+            <label className="mb-1 block font-mono text-[10px] font-bold tracking-wider uppercase">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               required
-              className="h-10 w-full border border-border bg-background px-3 text-[13px] outline-none transition-colors focus:border-foreground/50"
+              className="h-10 w-full rounded-xl border-2 border-[#034102]/30 bg-white px-3 text-sm outline-none transition-colors focus:border-[#034102]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="flex h-10 w-full items-center justify-center border border-foreground bg-foreground text-[12px] tracking-[0.05em] text-background uppercase transition-colors hover:bg-transparent hover:text-foreground disabled:opacity-50"
+            className="flex h-11 w-full items-center justify-center rounded-full bg-[#034102] font-display-cond text-xl tracking-wide text-[#b6fe00] transition-transform hover:scale-[1.01] disabled:opacity-50"
           >
-            {loading ? "Processing..." : isSignup ? "Create Account & Launch" : "Sign in"}
+            {loading ? "PROCESSING..." : isSignup ? "CREATE ACCOUNT & LAUNCH →" : "SIGN IN →"}
           </button>
         </form>
 
-        <p className="text-center text-[12px] text-muted-foreground pt-2">
-          <Link to="/" className="border-b border-foreground/30 text-foreground hover:border-foreground">
-            ← Back to main site
+        <p className="mt-5 text-center text-xs font-medium text-[#034102]/75">
+          <Link to="/" className="underline decoration-2 underline-offset-4 hover:text-[#034102]">
+            ← Back to PLINTH landing page
           </Link>
         </p>
       </div>

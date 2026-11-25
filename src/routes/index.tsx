@@ -1,30 +1,44 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { getToken } from "@/lib/api";
+import { createFileRoute } from "@tanstack/react-router";
+import { useSmoothScroll } from "@/lib/anim";
+import { Preloader } from "@/components/plinth/Preloader";
+import { PullMenu } from "@/components/plinth/PullMenu";
+import { SoundPill } from "@/components/plinth/SoundPill";
+import { SweetHero } from "@/components/plinth/SweetHero";
+import { OrbitalDial } from "@/components/plinth/OrbitalDial";
+import { GiantJourney } from "@/components/plinth/GiantJourney";
+import { MakeItBuild } from "@/components/plinth/MakeItBuild";
+import { SweetFooter } from "@/components/plinth/SweetFooter";
+
+const title = "PLINTH — Architecture, computed";
+const description =
+  "PLINTH is an AI platform that carries a building from bare ground to issued drawings: floor plans, massing, structure, cost, compliance and BOQ in one continuous model.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [{ title: "PLINTH — Blank Canvas" }],
+    meta: [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "website" },
+    ],
   }),
   component: Index,
 });
 
 function Index() {
-  const target = getToken() ? "/app" : "/login";
+  useSmoothScroll();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center text-foreground">
-      <p className="font-mono text-xs tracking-[0.25em] text-muted-foreground uppercase">
-        PLINTH · Clean Slate
-      </p>
-      <h1 className="mt-3 text-2xl font-medium tracking-tight">
-        Landing frontend cleared — ready for reference redesign.
-      </h1>
-      <Link
-        to={target}
-        className="mt-6 inline-flex items-center border border-foreground bg-foreground px-5 py-2.5 text-sm font-medium text-background transition-opacity hover:opacity-85"
-      >
-        Open PLINTH →
-      </Link>
+    <main className="sweet-body min-h-screen overflow-x-hidden bg-[#034102]">
+      <Preloader />
+      <PullMenu />
+      <SoundPill />
+      <SweetHero />
+      <OrbitalDial />
+      <GiantJourney />
+      <MakeItBuild />
+      <SweetFooter />
     </main>
   );
 }
