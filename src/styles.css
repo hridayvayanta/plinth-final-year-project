@@ -406,7 +406,6 @@ html:has(.sweet-body)::-webkit-scrollbar-thumb {
 
 /* Peelable translucent masking/drafting tape strip */
 .peel-tape {
-  position: relative;
   background: linear-gradient(
     180deg,
     rgba(247, 236, 198, 0.88) 0%,
