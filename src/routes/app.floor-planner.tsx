@@ -62,7 +62,16 @@ export const Route = createFileRoute("/app/floor-planner")({
   component: Planner,
 });
 
-const tools = ["Select", "Calibrate", "Room", "Wall", "Door", "Window", "Dimension", "Text"];
+const tools = [
+  "Select",
+  "Calibrate",
+  "Room",
+  "Wall",
+  "Door",
+  "Window",
+  "Dimension",
+  "Text",
+];
 
 const ROOM_TYPES = [
   "living",
@@ -106,10 +115,13 @@ function mapRoomToRoomData(r: Room, index: number): RoomData {
   const orientation =
     typeof geom.orientation === "string"
       ? geom.orientation
-      : (DEFAULT_ORIENTATIONS[index % 8] ?? "NE");
+      : DEFAULT_ORIENTATIONS[index % 8] ?? "NE";
 
   // Canonical unit is area_sqm (square metres)
-  const area_sqm = r.area_sqm != null ? r.area_sqm : estimateRoomAreaSqm(w, h).areaSqm;
+  const area_sqm =
+    r.area_sqm != null
+      ? r.area_sqm
+      : estimateRoomAreaSqm(w, h).areaSqm;
 
   // Display unit is whole square feet
   const area_sqft = sqmToSqft(area_sqm);
@@ -175,8 +187,7 @@ function Planner() {
   // Calibration Scale extracted from activeFloor.plan_data
   const calibrationScale: ScaleCalibration | null = useMemo(() => {
     if (!activeFloor?.plan_data) return null;
-    const scale = (activeFloor.plan_data as Record<string, unknown>)["scale"] as
-      ScaleCalibration | undefined;
+    const scale = (activeFloor.plan_data as Record<string, unknown>)["scale"] as ScaleCalibration | undefined;
     if (scale && scale.isCalibrated) {
       const ratioString = scale.ratioString || getStandardScaleRatioString(scale.metersPerUnit);
       const isPlausible = isScaleCalibrationPlausible(scale.metersPerUnit);
@@ -249,7 +260,7 @@ function Planner() {
       if (other.id === currentRoom.id) continue;
       const { isOverlapping, isSharedBoundary, ratio } = computeBoxOverlap(
         { x: currentRoom.x, y: currentRoom.y, w: currentRoom.w, h: currentRoom.h },
-        { x: other.x, y: other.y, w: other.w, h: other.h },
+        { x: other.x, y: other.y, w: other.w, h: other.h }
       );
       if (isOverlapping && !isSharedBoundary) {
         overlaps.push({ name: other.name, ratio, otherId: other.id });
@@ -325,22 +336,18 @@ function Planner() {
           };
         }
         return { ...r, [field]: value };
-      }),
+      })
     );
   }
 
   // Interactive Live SVG Drag & Resize handlers
-  function handleRoomCoordsLiveChange(
-    id: string,
-    coords: { x: number; y: number; w: number; h: number },
-  ) {
-    setRoomList((prev) => prev.map((r) => (r.id === id ? { ...r, ...coords } : r)));
+  function handleRoomCoordsLiveChange(id: string, coords: { x: number; y: number; w: number; h: number }) {
+    setRoomList((prev) =>
+      prev.map((r) => (r.id === id ? { ...r, ...coords } : r))
+    );
   }
 
-  function handleRoomCoordsChangeEnd(
-    id: string,
-    coords: { x: number; y: number; w: number; h: number },
-  ) {
+  function handleRoomCoordsChangeEnd(id: string, coords: { x: number; y: number; w: number; h: number }) {
     const target = roomList.find((r) => r.id === id);
     if (!target) return;
 
@@ -353,11 +360,7 @@ function Planner() {
     // If dimensions changed, check if a calibrated scale exists
     if (dimChanged) {
       if (calibrationScale?.isCalibrated && calibrationScale.isPlausible !== false) {
-        const calibDims = calculateCalibratedRoomDimensions(
-          coords.w,
-          coords.h,
-          calibrationScale.metersPerUnit,
-        );
+        const calibDims = calculateCalibratedRoomDimensions(coords.w, coords.h, calibrationScale.metersPerUnit);
         nextAreaSqm = calibDims.areaSqm;
         nextStatus = "calibrated";
         nextIsCalibCalc = true;
@@ -392,22 +395,21 @@ function Planner() {
           toast.success(
             `Updated "${target.name}" geometry (${coords.w}×${coords.h}u${
               nextIsCalibCalc ? ` · ${nextAreaSqm} m² calibrated` : ""
-            }).`,
+            }).`
           );
         },
         onError: (err: unknown) => {
           const msg = err instanceof Error ? err.message : "Failed to save room geometry";
           toast.error(msg);
         },
-      },
+      }
     );
   }
 
   function handleSaveRoom() {
     if (!selectedRoomId || !currentRoom) return;
 
-    const areaSqm =
-      currentRoom.area_sqm != null ? currentRoom.area_sqm : sqftToSqm(currentRoom.area);
+    const areaSqm = currentRoom.area_sqm != null ? currentRoom.area_sqm : sqftToSqm(currentRoom.area);
 
     updateRoomMutation.mutate(
       {
@@ -437,7 +439,7 @@ function Planner() {
           const msg = err instanceof Error ? err.message : "Unknown error";
           toast.error(`Failed to save room: ${msg}`);
         },
-      },
+      }
     );
   }
 
@@ -476,7 +478,7 @@ function Planner() {
           const msg = err instanceof Error ? err.message : "Unknown error";
           toast.error(`Failed to add room: ${msg}`);
         },
-      },
+      }
     );
   }
 
@@ -523,7 +525,7 @@ function Planner() {
       const dist = Math.hypot(pt.x - calibPointA.x, pt.y - calibPointA.y);
       if (dist < MIN_CALIBRATION_LINE_UNITS) {
         toast.warning(
-          `Reference line is too short (${dist.toFixed(1)} units < ${MIN_CALIBRATION_LINE_UNITS} min). Please select Point B further away.`,
+          `Reference line is too short (${dist.toFixed(1)} units < ${MIN_CALIBRATION_LINE_UNITS} min). Please select Point B further away.`
         );
         return;
       }
@@ -585,7 +587,7 @@ function Planner() {
       setCalibPointB(null);
       setTool("Select");
       toast.success(
-        `Scale calibrated! 1 unit = ${scaleResult.metersPerUnit.toFixed(3)}m (${scaleResult.ratioString}).`,
+        `Scale calibrated! 1 unit = ${scaleResult.metersPerUnit.toFixed(3)}m (${scaleResult.ratioString}).`
       );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Calibration failed";
@@ -619,7 +621,7 @@ function Planner() {
     const dims = calculateCalibratedRoomDimensions(
       currentRoom.w,
       currentRoom.h,
-      calibrationScale.metersPerUnit,
+      calibrationScale.metersPerUnit
     );
 
     setShowApplyAreaConfirm(false);
@@ -636,8 +638,8 @@ function Planner() {
               isEstimate: false,
               isManual: false,
             }
-          : r,
-      ),
+          : r
+      )
     );
 
     updateRoomMutation.mutate(
@@ -665,14 +667,14 @@ function Planner() {
       {
         onSuccess: () => {
           toast.success(
-            `Applied calibrated area to "${currentRoom.name}": ${dims.areaSqm} m² (${dims.areaSqft} sq ft).`,
+            `Applied calibrated area to "${currentRoom.name}": ${dims.areaSqm} m² (${dims.areaSqft} sq ft).`
           );
         },
         onError: (err: unknown) => {
           const msg = err instanceof Error ? err.message : "Failed to update room area";
           toast.error(msg);
         },
-      },
+      }
     );
   }
 
@@ -705,7 +707,9 @@ function Planner() {
       if (res.updated_count > 0) parts.push(`updated ${res.updated_count} existing room(s)`);
       const summaryText = parts.length > 0 ? parts.join(", ") : "synced rooms";
 
-      toast.success(`Successfully ${summaryText} on ${activeFloor.name}!`);
+      toast.success(
+        `Successfully ${summaryText} on ${activeFloor.name}!`
+      );
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to import rooms.";
       toast.error(`Import failed: ${msg}`);
@@ -727,7 +731,7 @@ function Planner() {
     return calculateCalibratedRoomDimensions(
       currentRoom.w,
       currentRoom.h,
-      calibrationScale.metersPerUnit,
+      calibrationScale.metersPerUnit
     );
   }, [currentRoom, calibrationScale]);
 
@@ -747,7 +751,7 @@ function Planner() {
         <button
           onClick={handleAddRoom}
           disabled={!activeFloor || createRoomMutation.isPending}
-          className="h-7 shrink-0 whitespace-nowrap border border-foreground bg-foreground px-3 text-[11px] text-background transition-colors hover:bg-transparent hover:text-foreground disabled:opacity-50"
+          className="h-7 border border-foreground bg-foreground px-3 text-[11px] text-background transition-colors hover:bg-transparent hover:text-foreground disabled:opacity-50"
         >
           {createRoomMutation.isPending ? "Adding..." : "+ Add Room"}
         </button>
@@ -774,13 +778,9 @@ function Planner() {
         )}
 
         <div className="ml-auto flex shrink-0 items-center gap-2">
-          <ToolButton onClick={() => setZoom((z) => Math.max(0.5, +(z - 0.1).toFixed(2)))}>
-            −
-          </ToolButton>
+          <ToolButton onClick={() => setZoom((z) => Math.max(0.5, +(z - 0.1).toFixed(2)))}>−</ToolButton>
           <span className="label-tech w-12 text-center">{Math.round(zoom * 100)}%</span>
-          <ToolButton onClick={() => setZoom((z) => Math.min(2, +(z + 0.1).toFixed(2)))}>
-            +
-          </ToolButton>
+          <ToolButton onClick={() => setZoom((z) => Math.min(2, +(z + 0.1).toFixed(2)))}>+</ToolButton>
           <ToolButton onClick={() => setZoom(1)}>Fit</ToolButton>
         </div>
       </div>
@@ -801,9 +801,7 @@ function Planner() {
         <div className="flex flex-wrap items-center justify-between border-b border-border bg-sidebar/60 px-3 py-1.5 font-mono text-[10px] text-muted-foreground select-none">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-1.5">
-              <span className="text-foreground/70 uppercase tracking-wider text-[9px]">
-                Floor Envelope:
-              </span>
+              <span className="text-foreground/70 uppercase tracking-wider text-[9px]">Floor Envelope:</span>
               <span className="font-semibold text-foreground">
                 {floorBreakdown.floorAreaSqm.toFixed(1)} m²
               </span>
@@ -811,9 +809,7 @@ function Planner() {
             </div>
             <span className="text-border">|</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-foreground/70 uppercase tracking-wider text-[9px]">
-                Allocated Rooms:
-              </span>
+              <span className="text-foreground/70 uppercase tracking-wider text-[9px]">Allocated Rooms:</span>
               <span className="font-semibold text-foreground">
                 {floorBreakdown.roomsTotalAreaSqm.toFixed(1)} m²
               </span>
@@ -821,9 +817,7 @@ function Planner() {
             </div>
             <span className="text-border">|</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-foreground/70 uppercase tracking-wider text-[9px]">
-                Circulation / Partitions:
-              </span>
+              <span className="text-foreground/70 uppercase tracking-wider text-[9px]">Circulation / Partitions:</span>
               <span className="font-semibold text-foreground">
                 {floorBreakdown.unallocatedAreaSqm.toFixed(1)} m²
               </span>
@@ -832,25 +826,20 @@ function Planner() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-[9px] uppercase tracking-wider text-muted-foreground/80">
-              Breakdown:
-            </span>
+            <span className="text-[9px] uppercase tracking-wider text-muted-foreground/80">Breakdown:</span>
             {floorBreakdown.calibratedCount > 0 && (
               <span className="px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 text-[9px] font-semibold">
-                ✓ {floorBreakdown.calibratedCount} Calibrated (
-                {floorBreakdown.calibratedAreaSqm.toFixed(1)} m²)
+                ✓ {floorBreakdown.calibratedCount} Calibrated ({floorBreakdown.calibratedAreaSqm.toFixed(1)} m²)
               </span>
             )}
             {floorBreakdown.userCorrectedCount > 0 && (
               <span className="px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 text-blue-600 text-[9px] font-semibold">
-                ✎ {floorBreakdown.userCorrectedCount} User Corrected (
-                {floorBreakdown.userCorrectedAreaSqm.toFixed(1)} m²)
+                ✎ {floorBreakdown.userCorrectedCount} User Corrected ({floorBreakdown.userCorrectedAreaSqm.toFixed(1)} m²)
               </span>
             )}
             {floorBreakdown.aiEstimateCount > 0 && (
               <span className="px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-600 text-[9px] font-semibold">
-                ~ {floorBreakdown.aiEstimateCount} AI Est (
-                {floorBreakdown.aiEstimateAreaSqm.toFixed(1)} m²)
+                ~ {floorBreakdown.aiEstimateCount} AI Est ({floorBreakdown.aiEstimateAreaSqm.toFixed(1)} m²)
               </span>
             )}
           </div>
@@ -872,8 +861,12 @@ function Planner() {
             floors.map((f) => {
               const isSelected = activeFloor?.id === f.id;
               const floorCode =
-                f.level_number < 0 ? `B${Math.abs(f.level_number)}` : `L0${f.level_number}`;
-              const floorAreaSqFt = f.area_sqm ? `${sqmToSqft(f.area_sqm)} sf` : "—";
+                f.level_number < 0
+                  ? `B${Math.abs(f.level_number)}`
+                  : `L0${f.level_number}`;
+              const floorAreaSqFt = f.area_sqm
+                ? `${sqmToSqft(f.area_sqm)} sf`
+                : "—";
 
               return (
                 <button
@@ -890,7 +883,10 @@ function Planner() {
                   }`}
                 >
                   <span className="block font-mono text-[11px] font-semibold">{floorCode}</span>
-                  <span className="mt-0.5 block truncate text-[9px] opacity-80" title={f.name}>
+                  <span
+                    className="mt-0.5 block truncate text-[9px] opacity-80"
+                    title={f.name}
+                  >
                     {f.name}
                   </span>
                   <span className="mt-1 block font-mono text-[8px] opacity-60">
@@ -930,9 +926,7 @@ function Planner() {
               </div>
             </div>
           ) : (
-            <div
-              className={`relative h-full w-full flex items-center justify-center p-2 overflow-hidden ${grid ? "grid-paper" : ""}`}
-            >
+            <div className={`relative h-full w-full flex items-center justify-center p-2 overflow-hidden ${grid ? "grid-paper" : ""}`}>
               {/* Calibration Instructions Floating Banner */}
               {isCalibrating && (
                 <div className="absolute top-3 inset-x-0 mx-auto max-w-md z-20 bg-background/95 border border-blue-500 shadow-xl p-2.5 text-center backdrop-blur-md">
@@ -957,8 +951,8 @@ function Planner() {
                     {!calibPointA
                       ? "Step 1: Click the first point (Point A) on a wall or reference."
                       : !calibPointB
-                        ? `Point A marked at (${calibPointA.x}, ${calibPointA.y}). Click Point B.`
-                        : "Points marked. Opening calibration dialog..."}
+                      ? `Point A marked at (${calibPointA.x}, ${calibPointA.y}). Click Point B.`
+                      : "Points marked. Opening calibration dialog..."}
                   </p>
                 </div>
               )}
@@ -982,10 +976,7 @@ function Planner() {
                 {calibrationScale?.isCalibrated ? (
                   <>
                     {calibrationScale.isPlausible === false ? (
-                      <span
-                        className="font-semibold text-amber-600 flex items-center gap-1"
-                        title="Scale factor (1u > 2.0m) exceeds typical bounds. Click Recalibrate to set reference line."
-                      >
+                      <span className="font-semibold text-amber-600 flex items-center gap-1" title="Scale factor (1u > 2.0m) exceeds typical bounds. Click Recalibrate to set reference line.">
                         ⚠️ Scale Needs Review · {calibrationScale.ratioString}
                       </span>
                     ) : (
@@ -1095,8 +1086,7 @@ function Planner() {
                     </span>
                   </div>
                   <p className="mt-1 text-[9px] leading-tight">
-                    Overlaps with{" "}
-                    <strong>{currentRoomOverlaps.map((o) => o.name).join(", ")}</strong>.
+                    Overlaps with <strong>{currentRoomOverlaps.map((o) => o.name).join(", ")}</strong>.
                   </p>
                   <div className="mt-2 flex gap-1.5">
                     <button
@@ -1131,21 +1121,12 @@ function Planner() {
 
               {/* Measurement Provenance Badge */}
               {(() => {
-                const statusInfo = getMeasurementStatusInfo(
-                  currentRoom.measurementStatus ||
-                    (currentRoom.isEstimate
-                      ? "ai_estimate"
-                      : currentRoom.isCalibratedCalc
-                        ? "calibrated"
-                        : "user_corrected"),
-                );
+                const statusInfo = getMeasurementStatusInfo(currentRoom.measurementStatus || (currentRoom.isEstimate ? "ai_estimate" : currentRoom.isCalibratedCalc ? "calibrated" : "user_corrected"));
                 return (
                   <div className="border border-border/80 bg-background/60 p-2 font-mono text-[10px]">
                     <div className="flex items-center justify-between">
                       <span className="text-muted-foreground">Measurement Status:</span>
-                      <span
-                        className={`text-[9px] font-semibold px-1.5 py-0.5 rounded border ${statusInfo.badgeClass}`}
-                      >
+                      <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded border ${statusInfo.badgeClass}`}>
                         {statusInfo.badgeText}
                       </span>
                     </div>
@@ -1229,8 +1210,7 @@ function Planner() {
                   <div className="mt-2 pt-1.5 border-t border-emerald-500/20 flex items-center justify-between">
                     <span className="text-muted-foreground">Calibrated Area:</span>
                     <strong>
-                      {calibratedCurrentRoomDims.areaSqm} m² ({calibratedCurrentRoomDims.areaSqft}{" "}
-                      sq ft)
+                      {calibratedCurrentRoomDims.areaSqm} m² ({calibratedCurrentRoomDims.areaSqft} sq ft)
                     </strong>
                   </div>
                   {showApplyAreaConfirm ? (
@@ -1239,12 +1219,9 @@ function Planner() {
                         ⚠️ Confirm Area Update?
                       </p>
                       <p className="text-[9px] text-foreground leading-tight">
-                        Current:{" "}
-                        <strong>{currentRoom.area_sqm ?? sqftToSqm(currentRoom.area)} m²</strong> (
-                        {currentRoom.area} sq ft)
+                        Current: <strong>{currentRoom.area_sqm ?? sqftToSqm(currentRoom.area)} m²</strong> ({currentRoom.area} sq ft)
                         <br />
-                        Calibrated: <strong>{calibratedCurrentRoomDims.areaSqm} m²</strong> (
-                        {calibratedCurrentRoomDims.areaSqft} sq ft)
+                        Calibrated: <strong>{calibratedCurrentRoomDims.areaSqm} m²</strong> ({calibratedCurrentRoomDims.areaSqft} sq ft)
                       </p>
                       <div className="flex gap-1.5 pt-1">
                         <button
@@ -1421,8 +1398,7 @@ function Planner() {
           ) : (
             <div className="flex h-48 items-center justify-center border border-dashed border-border/80 p-4 text-center">
               <p className="font-mono text-[11px] text-muted-foreground">
-                Click on any room in the floor plan to edit geometry, resize boundaries, or adjust
-                areas.
+                Click on any room in the floor plan to edit geometry, resize boundaries, or adjust areas.
               </p>
             </div>
           )}
@@ -1442,16 +1418,8 @@ function Planner() {
               </div>
               <div className="mt-1 flex justify-between">
                 <span>Scale Status:</span>
-                <span
-                  className={
-                    calibrationScale?.isCalibrated
-                      ? "text-emerald-600 font-semibold"
-                      : "text-amber-600"
-                  }
-                >
-                  {calibrationScale?.isCalibrated
-                    ? `✓ Calibrated (${calibrationScale.ratioString})`
-                    : "Uncalibrated"}
+                <span className={calibrationScale?.isCalibrated ? "text-emerald-600 font-semibold" : "text-amber-600"}>
+                  {calibrationScale?.isCalibrated ? `✓ Calibrated (${calibrationScale.ratioString})` : "Uncalibrated"}
                 </span>
               </div>
             </div>
@@ -1467,8 +1435,7 @@ function Planner() {
               Scale Calibration (2-Point Reference)
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">
-              Enter the known real-world dimension between Point A and Point B to calibrate drawing
-              coordinates.
+              Enter the known real-world dimension between Point A and Point B to calibrate drawing coordinates.
             </DialogDescription>
           </DialogHeader>
 
@@ -1476,31 +1443,19 @@ function Planner() {
             <div className="grid grid-cols-2 gap-2 p-2 bg-muted/40 border border-border">
               <div>
                 <span className="text-muted-foreground block text-[10px]">Point A (Canvas)</span>
-                <span className="font-bold">
-                  ({calibPointA?.x}, {calibPointA?.y}) units
-                </span>
+                <span className="font-bold">({calibPointA?.x}, {calibPointA?.y}) units</span>
               </div>
               <div>
                 <span className="text-muted-foreground block text-[10px]">Point B (Canvas)</span>
-                <span className="font-bold">
-                  ({calibPointB?.x}, {calibPointB?.y}) units
-                </span>
+                <span className="font-bold">({calibPointB?.x}, {calibPointB?.y}) units</span>
               </div>
             </div>
 
             <div className="p-2 border border-blue-500/30 bg-blue-500/5 flex items-center justify-between">
               <div>
-                <span className="text-muted-foreground text-[10px] block">
-                  Measured Canvas Reference Line:
-                </span>
+                <span className="text-muted-foreground text-[10px] block">Measured Canvas Reference Line:</span>
                 <span className="font-bold text-sm text-blue-700">
-                  {calibPointA && calibPointB
-                    ? Math.hypot(
-                        calibPointB.x - calibPointA.x,
-                        calibPointB.y - calibPointA.y,
-                      ).toFixed(2)
-                    : 0}{" "}
-                  units
+                  {calibPointA && calibPointB ? Math.hypot(calibPointB.x - calibPointA.x, calibPointB.y - calibPointA.y).toFixed(2) : 0} units
                 </span>
               </div>
               <span className="text-[10px] text-muted-foreground font-mono">
@@ -1540,14 +1495,8 @@ function Planner() {
               <div className="p-3 border border-amber-500/50 bg-amber-500/10 space-y-2 text-xs">
                 <p className="font-semibold text-amber-700">⚠️ Existing Scale Already Configured</p>
                 <p className="text-[11px] text-foreground leading-relaxed">
-                  Floor currently has scale {calibrationScale?.ratioString} (1 unit ={" "}
-                  {calibrationScale?.metersPerUnit.toFixed(3)}m). Are you sure you want to replace
-                  it with{" "}
-                  <strong>
-                    {liveCalibValidation?.ratioString} (1 unit ={" "}
-                    {liveCalibValidation?.metersPerUnit.toFixed(3)}m)
-                  </strong>
-                  ?
+                  Floor currently has scale {calibrationScale?.ratioString} (1 unit = {calibrationScale?.metersPerUnit.toFixed(3)}m).
+                  Are you sure you want to replace it with <strong>{liveCalibValidation?.ratioString} (1 unit = {liveCalibValidation?.metersPerUnit.toFixed(3)}m)</strong>?
                 </p>
                 <div className="flex gap-2 pt-1">
                   <button
@@ -1586,26 +1535,17 @@ function Planner() {
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-foreground text-[11px]">
                       <div>
-                        <span className="text-[9px] text-muted-foreground block">
-                          Conversion factor:
-                        </span>
+                        <span className="text-[9px] text-muted-foreground block">Conversion factor:</span>
                         <strong>1 unit = {liveCalibValidation.metersPerUnit.toFixed(3)} m</strong>
                         <span className="text-[9px] text-muted-foreground block">
-                          ({Math.round(liveCalibValidation.metersPerUnit * 1000)} mm /{" "}
-                          {Math.round(liveCalibValidation.metersPerUnit * 3.28084 * 10) / 10} ft)
+                          ({Math.round(liveCalibValidation.metersPerUnit * 1000)} mm / {Math.round(liveCalibValidation.metersPerUnit * 3.28084 * 10) / 10} ft)
                         </span>
                       </div>
                       <div>
+                        <span className="text-[9px] text-muted-foreground block">Building Envelope (76×54u):</span>
+                        <strong>{liveCalibValidation.envelopeWidthM}m × {liveCalibValidation.envelopeHeightM}m</strong>
                         <span className="text-[9px] text-muted-foreground block">
-                          Building Envelope (76×54u):
-                        </span>
-                        <strong>
-                          {liveCalibValidation.envelopeWidthM}m ×{" "}
-                          {liveCalibValidation.envelopeHeightM}m
-                        </strong>
-                        <span className="text-[9px] text-muted-foreground block">
-                          (~{liveCalibValidation.envelopeAreaSqm} m² /{" "}
-                          {sqmToSqft(liveCalibValidation.envelopeAreaSqm)} sq ft)
+                          (~{liveCalibValidation.envelopeAreaSqm} m² / {sqmToSqft(liveCalibValidation.envelopeAreaSqm)} sq ft)
                         </span>
                       </div>
                     </div>

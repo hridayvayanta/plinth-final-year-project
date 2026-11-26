@@ -2,7 +2,6 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useState, useEffect } from "react";
 import { Wordmark } from "@/components/plinth/dashboard/site-chrome";
 import { cn } from "@/lib/utils";
-import { normalizeRoleId, type StudioRoleId } from "@/lib/auth-nav";
 import { useAuth } from "@/hooks/use-auth";
 import { useProjects } from "@/hooks/use-api";
 
@@ -10,24 +9,13 @@ export const Route = createFileRoute("/app")({
   component: AppLayout,
 });
 
-const ROLES_LIST: { id: StudioRoleId; label: string; focus: string[] }[] = [
-  {
-    id: "architect",
-    label: "Architect",
-    focus: ["Floor Planner", "AI Assistant", "Site Analysis"],
-  },
+const ROLES_LIST = [
+  { id: "architect", label: "Architect", focus: ["Floor Planner", "AI Assistant", "Site Analysis"] },
   { id: "project_admin", label: "Project Admin", focus: ["Overview", "Projects", "Compliance"] },
-  {
-    id: "super_admin",
-    label: "Super Admin",
-    focus: ["Overview", "Projects", "Compliance", "Documents"],
-  },
   { id: "client", label: "Client", focus: ["Overview", "Cost & Materials", "Visualization"] },
   { id: "structural", label: "Structural Engineer", focus: ["Compliance", "Documents"] },
   { id: "interior", label: "Interior Designer", focus: ["Interior Studio", "Visualization"] },
   { id: "builder", label: "Builder / Contractor", focus: ["Cost & Materials", "Documents"] },
-  { id: "site", label: "Site Engineer", focus: ["Overview", "Floor Planner", "Documents"] },
-  { id: "vendor", label: "Vendor / Supplier", focus: ["Cost & Materials", "Documents"] },
 ];
 
 const nav: { group: string; items: { to: string; label: string; code: string }[] }[] = [
@@ -68,31 +56,19 @@ function AppLayout() {
   const { data: projectsData } = useProjects();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
-  const [activeRole, setActiveRole] = useState<StudioRoleId>(() => normalizeRoleId(user?.role));
-
-  useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof localStorage !== "undefined" &&
-      typeof localStorage.getItem === "function"
-    ) {
+  const [activeRole, setActiveRole] = useState(() => {
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined" && typeof localStorage.getItem === "function") {
       try {
-        const stored = localStorage.getItem("plinth_user_role");
-        if (stored) {
-          setActiveRole(normalizeRoleId(stored));
-        }
+        return localStorage.getItem("plinth_user_role") || user?.role || "architect";
       } catch {
-        // ignore
+        return user?.role || "architect";
       }
     }
-  }, []);
+    return user?.role || "architect";
+  });
 
   useEffect(() => {
-    if (
-      typeof window !== "undefined" &&
-      typeof localStorage !== "undefined" &&
-      typeof localStorage.setItem === "function"
-    ) {
+    if (typeof window !== "undefined" && typeof localStorage !== "undefined" && typeof localStorage.setItem === "function") {
       try {
         localStorage.setItem("plinth_user_role", activeRole);
       } catch {
@@ -106,72 +82,61 @@ function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Top Studio Bar (#111317 Midnight Charcoal + #2952ff Cobalt Identity) */}
-      <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-4 border-b border-[#262a33] bg-[#111317] px-4 text-[#f4f1ea]">
+      {/* top bar */}
+      <header className="sticky top-0 z-40 flex h-12 shrink-0 items-center gap-4 border-b border-border bg-background px-4">
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="rounded-full border border-[#f4f1ea]/30 px-2.5 py-1 font-mono text-[10px] font-bold tracking-wider text-[#f4f1ea] uppercase lg:hidden"
+          className="label-tech lg:hidden"
           aria-label="Toggle navigation"
         >
           Menu
         </button>
-
-        <Link
-          to="/"
-          className="flex items-center gap-2 rounded-full bg-[#2952ff] px-3 py-1 text-white"
-        >
-          <span className="block h-2 w-2 rounded-full bg-white" aria-hidden />
-          <Wordmark className="text-[11px] font-extrabold" />
+        <Link to="/" className="flex items-center gap-2.5">
+          <span className="block h-2.5 w-2.5 border border-foreground" aria-hidden />
+          <Wordmark className="text-[12px]" />
         </Link>
+        <span className="hidden h-4 w-px bg-border sm:block" />
 
-        <span className="hidden h-4 w-px bg-[#f4f1ea]/20 sm:block" />
-
-        {/* Live Project Badge linking to Projects */}
-        <Link
-          to="/app/projects"
-          className="hidden min-w-0 items-baseline gap-3 transition-opacity hover:opacity-85 sm:flex"
-        >
-          <span className="truncate text-[13px] font-semibold text-[#f4f1ea]">
-            {currentProject?.name || "The Glass Pavilion"}
+        {/* Live Project info */}
+        <div className="hidden min-w-0 items-baseline gap-3 sm:flex">
+          <span className="truncate text-[13px] font-medium">
+            {currentProject?.name || "Residence 01 — Shah Villa"}
           </span>
-          <span className="truncate font-mono text-[10px] tracking-[0.12em] text-[#60a5fa] uppercase">
-            {currentProject?.code || "PRJ-001"} · {currentProject?.location || "Bengaluru, KA"}
+          <span className="label-tech truncate">
+            {currentProject?.code || "PLT-2026-001"} · {currentProject?.location || "Bangalore, KA"}
           </span>
-        </Link>
+        </div>
 
         {/* Role Selector & User Actions */}
-        <div className="ml-auto flex shrink-0 items-center gap-2.5">
-          <Link
-            to="/"
-            className="hidden shrink-0 items-center whitespace-nowrap rounded-full border border-[#f4f1ea]/25 px-2.5 py-1 font-mono text-[10px] text-[#f4f1ea]/85 transition-colors hover:bg-[#f4f1ea] hover:text-[#111317] md:inline-flex"
-          >
-            ← Site
-          </Link>
-
-          <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-[#f4f1ea]/25 bg-[#1b1f27] px-2.5 py-1">
-            <span className="font-mono text-[10px] text-[#60a5fa] uppercase">Role:</span>
+        <div className="ml-auto flex items-center gap-3">
+          {/* Discipline Role Selector */}
+          <div className="flex items-center gap-1.5 border border-border bg-secondary/50 px-2 py-1">
+            <span className="label-tech text-[10px]">Role:</span>
             <select
               value={activeRole}
-              onChange={(e) => setActiveRole(normalizeRoleId(e.target.value))}
-              className="cursor-pointer bg-transparent text-[11px] font-semibold text-[#f4f1ea] outline-none"
+              onChange={(e) => setActiveRole(e.target.value)}
+              className="bg-transparent text-[11px] font-medium outline-none cursor-pointer"
             >
               {ROLES_LIST.map((r) => (
-                <option key={r.id} value={r.id} className="bg-[#111317] text-[#f4f1ea]">
+                <option key={r.id} value={r.id}>
                   {r.label}
                 </option>
               ))}
             </select>
           </div>
 
-          <div className="flex shrink-0 items-center gap-2">
-            <span className="hidden whitespace-nowrap text-[12px] text-[#f4f1ea]/75 sm:inline">
+          <span className="hidden h-4 w-px bg-border md:block" />
+
+          {/* User Name & Logout */}
+          <div className="flex items-center gap-2">
+            <span className="text-[12px] text-muted-foreground hidden sm:inline">
               {user?.full_name || "Sneha Iyer"}
             </span>
             <button
               onClick={logout}
               title="Sign Out"
-              className="h-7 shrink-0 whitespace-nowrap rounded-full border border-[#f4f1ea]/30 px-3 font-mono text-[10px] font-semibold text-[#f4f1ea] transition-colors hover:border-[#e8502b] hover:bg-[#e8502b] hover:text-white"
+              className="h-7 border border-border px-2 text-[10px] font-mono text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
             >
               Sign out
             </button>
@@ -180,7 +145,7 @@ function AppLayout() {
       </header>
 
       <div className="flex min-h-0 flex-1">
-        {/* Sidebar */}
+        {/* sidebar */}
         <aside
           className={cn(
             "z-30 w-56 shrink-0 border-r border-border bg-sidebar",
@@ -195,9 +160,7 @@ function AppLayout() {
                 <ul>
                   {g.items.map((it) => {
                     const active =
-                      it.to === "/app"
-                        ? pathname === "/app" || pathname === "/app/"
-                        : pathname.startsWith(it.to);
+                      it.to === "/app" ? pathname === "/app" || pathname === "/app/" : pathname.startsWith(it.to);
                     const isFocus = roleObj.focus.includes(it.label);
                     return (
                       <li key={it.to}>
@@ -205,19 +168,16 @@ function AppLayout() {
                           to={it.to}
                           onClick={() => setOpen(false)}
                           className={cn(
-                            "relative flex items-center gap-3 border-l-4 px-4 py-2 text-[13px] transition-colors",
+                            "flex items-center gap-3 border-l-2 px-4 py-2 text-[13px] transition-colors relative",
                             active
-                              ? "border-[#2952ff] bg-[#2952ff]/10 font-semibold text-[#111317]"
+                              ? "border-accent bg-sidebar-accent text-foreground"
                               : "border-transparent text-muted-foreground hover:bg-sidebar-accent/60 hover:text-foreground",
                           )}
                         >
-                          <span className="font-mono text-[10px] opacity-65">{it.code}</span>
+                          <span className="font-mono text-[10px] opacity-60">{it.code}</span>
                           <span className="flex-1">{it.label}</span>
                           {isFocus && (
-                            <span
-                              className="h-2 w-2 rounded-full bg-[#e8502b]"
-                              title={`Recommended for ${roleObj.label}`}
-                            />
+                            <span className="h-1.5 w-1.5 rounded-full bg-accent" title={`Recommended for ${roleObj.label}`} />
                           )}
                         </Link>
                       </li>
@@ -228,9 +188,9 @@ function AppLayout() {
             ))}
           </nav>
 
-          <div className="space-y-2 border-t border-border p-4">
+          <div className="border-t border-border p-4 space-y-2">
             <p className="label-tech">Discipline Mode</p>
-            <p className="text-[12px] font-semibold text-foreground">{roleObj.label}</p>
+            <p className="text-[12px] font-medium text-foreground">{roleObj.label}</p>
             <p className="text-[11px] leading-relaxed text-muted-foreground">
               Recommended modules highlighted with indicator.
             </p>

@@ -13,16 +13,11 @@ import { ModuleRunner } from "vite/module-runner";
 process.env.UV_THREADPOOL_SIZE = process.env.UV_THREADPOOL_SIZE || "64";
 
 const isBuild = process.argv.includes("build");
-const isGitHubPages = process.env.GITHUB_PAGES === "true";
-const pagesBasePath =
-  process.env.VITE_BASE_PATH || (isGitHubPages ? "/plinth-final-year-project/" : "/");
-const routerBasePath = pagesBasePath === "/" ? "/" : pagesBasePath.replace(/\/+$/, "");
 
 export default defineConfig({
   // Disable dev-mode error logger wrapper plugins to streamline SSR transform pipeline
   serverFnErrorLogger: false,
   ssrErrorLogger: false,
-  ...(isGitHubPages ? { nitro: false } : {}),
 
   tanstackStart: {
     // Redirect TanStack Start's server entry to src/server.prod.ts ONLY during production builds.
@@ -30,18 +25,8 @@ export default defineConfig({
     // Forcing server.prod into dev mode causes the module runner to attempt dynamic import
     // of pre-bundled server artifacts, resulting in 60s RPC timeouts.
     ...(isBuild ? { server: { entry: "server.prod" } } : {}),
-    ...(isGitHubPages
-      ? {
-          router: { basepath: routerBasePath },
-          spa: {
-            enabled: true,
-            prerender: { outputPath: "/index.html" },
-          },
-        }
-      : {}),
   },
   vite: {
-    base: pagesBasePath,
     server: {
       port: 8081,
       proxy: {

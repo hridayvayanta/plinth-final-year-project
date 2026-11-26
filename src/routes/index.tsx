@@ -1,29 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSmoothScroll } from "@/lib/anim";
-import { Preloader } from "@/components/plinth/Preloader";
-import { PullMenu } from "@/components/plinth/PullMenu";
-import { SoundPill } from "@/components/plinth/SoundPill";
-import { SweetHero } from "@/components/plinth/SweetHero";
-import { OrbitalDial } from "@/components/plinth/OrbitalDial";
-import { GiantJourney } from "@/components/plinth/GiantJourney";
-import { MakeItBuild } from "@/components/plinth/MakeItBuild";
-import { SweetFooter } from "@/components/plinth/SweetFooter";
+import { Nav, FloorRail } from "@/components/plinth/Nav";
+import { Cursor } from "@/components/plinth/Cursor";
+import { Loader } from "@/components/plinth/Loader";
+import { Cinematic } from "@/components/plinth/Cinematic";
+import { Vision } from "@/components/plinth/Vision";
+import { Story } from "@/components/plinth/Story";
+import { Platform } from "@/components/plinth/Platform";
+import { Roles } from "@/components/plinth/Roles";
+import { Modules } from "@/components/plinth/Modules";
+import { ModuleIndex } from "@/components/plinth/ModuleIndex";
+import { AIShowcase } from "@/components/plinth/AIShowcase";
+import { Showcase3D } from "@/components/plinth/Showcase3D";
+import { InteractiveArchitecture } from "@/components/plinth/InteractiveArchitecture";
+import { Technology } from "@/components/plinth/Technology";
+import { FutureVision } from "@/components/plinth/FutureVision";
+import { Footer } from "@/components/plinth/Footer";
 
-const title = "PLINTH — AI-Powered Architectural Design & Project Management Platform";
+const title = "PLINTH — Architecture, computed";
 const description =
-  "Explore PLINTH, an integrated architectural workspace for floor planning, interior design, 3D visualization, site analysis, cost estimation, compliance and AI-assisted project management.";
-const keywords =
-  "AI architecture software, architectural design platform, AI floor planner, architectural project management, interior design software, architectural visualization, construction cost estimation, site analysis software, architectural AI assistant, ArchTech, architectural planning tools, AI-powered architecture";
+  "PLINTH is an AI platform that carries a commercial building from bare ground to issued drawings: floor plans, massing, structure, cost, compliance and BOQ in one continuous model.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title },
       { name: "description", content: description },
-      { name: "keywords", content: keywords },
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -33,15 +39,24 @@ function Index() {
   useSmoothScroll();
 
   return (
-    <main className="sweet-body min-h-screen overflow-x-hidden bg-[#111317]">
-      <Preloader />
-      <PullMenu />
-      <SoundPill />
-      <SweetHero />
-      <OrbitalDial />
-      <GiantJourney />
-      <MakeItBuild />
-      <SweetFooter />
+    <main className="bg-paper">
+      <Loader />
+      <Cursor />
+      <Nav />
+      <FloorRail />
+      <Cinematic />
+      <Vision />
+      <Story />
+      <Platform />
+      <Roles />
+      <Modules />
+      <ModuleIndex />
+      <AIShowcase />
+      <Showcase3D />
+      <InteractiveArchitecture />
+      <Technology />
+      <FutureVision />
+      <Footer />
     </main>
   );
 }
