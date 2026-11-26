@@ -1,4 +1,5 @@
 import { getToken } from "@/lib/api";
+import { withBasePath } from "@/lib/base-path";
 import { Reveal } from "./Reveal";
 import { FLOORS } from "./data";
 
@@ -6,9 +7,9 @@ export function Footer() {
   function handleOpenPlinth(e: React.MouseEvent) {
     e.preventDefault();
     if (getToken()) {
-      window.location.href = "/app";
+      window.location.href = withBasePath("/app");
     } else {
-      window.location.href = "/login";
+      window.location.href = withBasePath("/login");
     }
   }
 

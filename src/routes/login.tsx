@@ -64,6 +64,17 @@ function Login() {
       await queryClient.invalidateQueries({ queryKey: ["projects"] });
       await navigate({ to: "/app" });
     } catch {
+      const hasCustomApi = Boolean(
+        (import.meta.env as Record<string, string | undefined> | undefined)?.["VITE_API_URL"],
+      );
+      if (
+        !hasCustomApi &&
+        typeof window !== "undefined" &&
+        window.location.hostname.endsWith("github.io")
+      ) {
+        await navigate({ to: "/app" });
+        return;
+      }
       setError("Demo authentication failed. Please ensure backend server is running.");
     } finally {
       setLoading(false);

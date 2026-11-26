@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useGsapScope } from "@/lib/anim";
+import { withBasePath } from "@/lib/base-path";
 
 const STAGES = [
   { at: 0.06, label: "Ground", line: "A site. Coordinates. Nothing built." },
@@ -150,8 +151,8 @@ export function Hero() {
       >
         <video
           ref={videoRef}
-          src="/assets/construction.mp4"
-          poster="/assets/plot.jpg"
+          src={withBasePath("/assets/construction.mp4")}
+          poster={withBasePath("/assets/plot.jpg")}
           muted
           playsInline
           preload="auto"

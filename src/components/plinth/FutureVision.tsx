@@ -1,5 +1,6 @@
 import { getToken } from "@/lib/api";
 import { useGsapScope } from "@/lib/anim";
+import { withBasePath } from "@/lib/base-path";
 import { Reveal } from "./Reveal";
 
 export function FutureVision() {
@@ -27,9 +28,9 @@ export function FutureVision() {
   function handleOpenPlinth(e: React.MouseEvent) {
     e.preventDefault();
     if (getToken()) {
-      window.location.href = "/app";
+      window.location.href = withBasePath("/app");
     } else {
-      window.location.href = "/login";
+      window.location.href = withBasePath("/login");
     }
   }
 
@@ -41,7 +42,7 @@ export function FutureVision() {
     >
       <img
         data-bg
-        src="/assets/final.jpg"
+        src={withBasePath("/assets/final.jpg")}
         alt="Completed luxury building at dusk"
         loading="lazy"
         className="absolute inset-0 h-full w-full object-cover opacity-45"

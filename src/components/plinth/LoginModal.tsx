@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { auth, setToken } from "@/lib/api";
+import { withBasePath } from "@/lib/base-path";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -29,7 +30,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         setToken(res.access_token);
       }
       onClose();
-      window.location.href = "/app";
+      window.location.href = withBasePath("/app");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Authentication failed";
       if (msg.includes("401") || msg.includes("Invalid")) {

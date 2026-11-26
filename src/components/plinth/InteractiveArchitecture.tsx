@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 import { Reveal } from "./Reveal";
 
 const LEVELS = [
@@ -59,13 +60,13 @@ export function InteractiveArchitecture() {
               }}
             >
               <img
-                src="/assets/final.jpg"
+                src={withBasePath("/assets/final.jpg")}
                 alt="Completed building with glass facade"
                 loading="lazy"
                 className="h-[58vh] w-full object-cover"
               />
               <img
-                src="/assets/frame.jpg"
+                src={withBasePath("/assets/frame.jpg")}
                 alt="Structural frame of the same building"
                 loading="lazy"
                 className="absolute inset-0 h-full w-full object-cover grayscale"

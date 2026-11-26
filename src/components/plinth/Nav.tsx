@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getToken } from "@/lib/api";
+import { withBasePath } from "@/lib/base-path";
 import { FLOORS } from "./data";
 
 export function Nav() {
@@ -16,9 +17,9 @@ export function Nav() {
   function handleOpenPlinth(e: React.MouseEvent) {
     e.preventDefault();
     if (getToken()) {
-      window.location.href = "/app";
+      window.location.href = withBasePath("/app");
     } else {
-      window.location.href = "/login";
+      window.location.href = withBasePath("/login");
     }
   }
 

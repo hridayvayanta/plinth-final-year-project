@@ -1,4 +1,5 @@
 import { useGsapScope } from "@/lib/anim";
+import { withBasePath } from "@/lib/base-path";
 import { Reveal } from "./Reveal";
 
 const STEPS = [
@@ -45,7 +46,7 @@ export function Platform() {
     >
       <img
         data-plate
-        src="/assets/glass.jpg"
+        src={withBasePath("/assets/glass.jpg")}
         alt="Glass and concrete facade of a completed luxury building"
         loading="lazy"
         className="absolute inset-0 h-full w-full object-cover opacity-35"

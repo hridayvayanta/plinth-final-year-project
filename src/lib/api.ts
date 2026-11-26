@@ -3,6 +3,8 @@
  * Backend runs at http://127.0.0.1:8000
  */
 
+import { withBasePath } from "./base-path";
+
 const API_BASE = (import.meta.env["VITE_API_URL"] as string) || "http://127.0.0.1:8000";
 
 // ── Token management ────────────────────────────────────────────────────
@@ -58,7 +60,7 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (res.status === 401) {
     clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
+    if (typeof window !== "undefined") window.location.href = withBasePath("/login");
     throw new Error("Unauthorized");
   }
 
@@ -84,7 +86,7 @@ async function apiUpload<T>(path: string, formData: FormData): Promise<T> {
 
   if (res.status === 401) {
     clearToken();
-    if (typeof window !== "undefined") window.location.href = "/login";
+    if (typeof window !== "undefined") window.location.href = withBasePath("/login");
     throw new Error("Unauthorized");
   }
 

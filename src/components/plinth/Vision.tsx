@@ -1,4 +1,5 @@
 import { useGsapScope } from "@/lib/anim";
+import { withBasePath } from "@/lib/base-path";
 import { Reveal } from "./Reveal";
 
 export function Vision() {
@@ -76,7 +77,7 @@ export function Vision() {
             <Reveal className="relative overflow-hidden rounded-[28px] lift">
               <img
                 data-parallax="-8"
-                src="/assets/frame.jpg"
+                src={withBasePath("/assets/frame.jpg")}
                 alt="Concrete and steel frame of a building under construction"
                 loading="lazy"
                 className="h-[62vh] w-full scale-110 object-cover"

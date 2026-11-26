@@ -1,10 +1,11 @@
 import { useGsapScope } from "@/lib/anim";
+import { withBasePath } from "@/lib/base-path";
 import { Reveal } from "./Reveal";
 
 const PLATES = [
-  { src: "/assets/glass.jpg", label: "Envelope study", alt: "Glass curtain wall of a modern building" },
-  { src: "/assets/frame.jpg", label: "Structural frame", alt: "Exposed concrete and steel frame" },
-  { src: "/assets/final.jpg", label: "Completed volume", alt: "Finished luxury building exterior" },
+  { src: withBasePath("/assets/glass.jpg"), label: "Envelope study", alt: "Glass curtain wall of a modern building" },
+  { src: withBasePath("/assets/frame.jpg"), label: "Structural frame", alt: "Exposed concrete and steel frame" },
+  { src: withBasePath("/assets/final.jpg"), label: "Completed volume", alt: "Finished luxury building exterior" },
 ];
 
 /** Floating architecture plates with perspective + image masking. */

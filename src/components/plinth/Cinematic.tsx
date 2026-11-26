@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useGsapScope } from "@/lib/anim";
+import { withBasePath } from "@/lib/base-path";
 
 const SCENES = [
   { at: 0.04, label: "01 — Blueprint", line: "A drawing. Dimensions. Nothing built yet." },
@@ -167,8 +168,8 @@ export function Cinematic() {
         <div data-stage className="absolute inset-0 origin-[50%_60%] will-change-transform">
           <video
             ref={videoRef}
-            src="/assets/cinematic.mp4"
-            poster="/assets/blueprint.jpg"
+            src={withBasePath("/assets/cinematic.mp4")}
+            poster={withBasePath("/assets/blueprint.jpg")}
             muted
             playsInline
             preload="auto"
@@ -186,7 +187,7 @@ export function Cinematic() {
         className="absolute right-[6vw] top-1/2 hidden h-[52vh] w-[30vw] -translate-y-1/2 overflow-hidden opacity-0 lift md:block"
       >
         <img
-          src="/assets/facade.jpg"
+          src={withBasePath("/assets/facade.jpg")}
           alt="Structural steel frame of a multi-storey commercial building"
           loading="lazy"
           className="h-full w-full object-cover"
@@ -197,7 +198,7 @@ export function Cinematic() {
         className="absolute left-[6vw] top-1/2 hidden h-[46vh] w-[26vw] -translate-y-1/2 overflow-hidden opacity-0 lift md:block"
       >
         <img
-          src="/assets/atrium.jpg"
+          src={withBasePath("/assets/atrium.jpg")}
           alt="Glass and concrete atrium of a technology headquarters"
           loading="lazy"
           className="h-full w-full object-cover"
